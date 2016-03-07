@@ -29,8 +29,14 @@ exports.servicedo = function(req, res) {
 		var operator = req.param("operator");
 		var startDate = req.param("startDate");
 		var ShipName = req.param("ShipName");
+		var numDay = req.param("numDay");
+		var txtLine = req.param("txtLine");
+		var txtRoom = req.param("txtRoom");
+		var numPerson = req.param("numPerson");
+		var remark = req.param("remark");
 		var userid = req.param("userid");
-		var sql = "insert into booking (bookingno,lastModify,userid,saler,operator,startDate,ShipName) values('"+bookingno+"',now(),"+userid+",'"+saler+"','"+operator+"','"+startDate+"','"+ShipName+"')";
+	
+		var sql = "insert into booking (bookingno,lastModify,userid,saler,operator,startDate,ShipName,numDay,txtLine,txtRoom,numPerson,remark) values('"+bookingno+"',now(),"+userid+",'"+saler+"','"+operator+"','"+startDate+"','"+ShipName+"','"+numDay+"','"+txtLine+"','"+txtRoom+"',"+numPerson+",'"+remark+"')";
 		debug(sql);
 		mysql.query(sql, function(err, result) {
 			if (err) return console.error(err.stack);
@@ -54,6 +60,10 @@ exports.servicedo = function(req, res) {
 		debug(sql);
 		mysql.query(sql, function(err, result) {
 			if (err) return console.error(err.stack);
+			var r = result[0].remark;
+			if(r){
+				result[0].remark = r.replace(/\n/g,"<br/>");
+			}
 			res.json(result);
 		});
 	}else if(_sql == "getBooking"){

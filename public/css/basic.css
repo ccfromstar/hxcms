@@ -364,3 +364,10 @@ gallery.html css
 .am-tabs-bd{
 	overflow:hidden;	
 }
+.am-alert{
+	position: fixed;
+	top:0;
+	margin-top:0;
+	width:100%;
+	z-index:9999;
+}

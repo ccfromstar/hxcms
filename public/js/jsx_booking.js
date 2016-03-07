@@ -1,10 +1,20 @@
+var numDay_val = ""; /*保存上次的值*/
+var numPerson_val = ""; /*保存上次的值*/
 var R_content = React.createClass({
+	 getInitialState:function(){
+        return {numDay:""};
+    },
 	createDoc:function(){
 		var bookingno = $('#bookingno').val();
 		var saler = $('#saler').val();
 		var operator = $('#operator').val();
 		var startDate = $('#startDate').val();
 		var ShipName = $('#ShipName').val();
+		var numDay = $('#numDay').val();
+		var txtLine = $('#txtLine').val();
+		var txtRoom = $('#txtRoom').val();
+		var numPerson = $('#numPerson').val();
+		var remark = $('#remark').val();
 		
 		if (!bookingno) {
 			$('.errorinfo').html('<p>订单编号不能为空</p>').removeClass("none");
@@ -34,6 +44,34 @@ var R_content = React.createClass({
 			}, 2000);
 			return false;
 		}
+		if (!numDay) {
+			$('.errorinfo').html('<p>天数不能为空</p>').removeClass("none");
+			setTimeout(function() {
+				$('.errorinfo').addClass("none");
+			}, 2000);
+			return false;
+		}
+		if (!txtLine) {
+			$('.errorinfo').html('<p>航线不能为空</p>').removeClass("none");
+			setTimeout(function() {
+				$('.errorinfo').addClass("none");
+			}, 2000);
+			return false;
+		}
+		if (!txtRoom) {
+			$('.errorinfo').html('<p>房型数量不能为空</p>').removeClass("none");
+			setTimeout(function() {
+				$('.errorinfo').addClass("none");
+			}, 2000);
+			return false;
+		}
+		if (!numPerson) {
+			$('.errorinfo').html('<p>总人数不能为空</p>').removeClass("none");
+			setTimeout(function() {
+				$('.errorinfo').addClass("none");
+			}, 2000);
+			return false;
+		}
 		$.ajax({
 			type: "post",
 			url: hosts + "/service/createBooking",
@@ -43,6 +81,11 @@ var R_content = React.createClass({
 				operator:operator,
 				startDate:startDate,
 				ShipName:ShipName,
+				numDay:numDay,
+				txtLine:txtLine,
+				txtRoom:txtRoom,
+				numPerson:numPerson,
+				remark:remark,
 				userid: window.sessionStorage.getItem('cid')
 			},
 			success: function(data) {
@@ -58,6 +101,32 @@ var R_content = React.createClass({
 	cancleDoc:function(){
 		window.location = 'index.html';
 	},
+	numDay:function(e){
+        var val = e.target.value;
+        if(isNaN(val)){
+            val = numDay_val;
+            $('.errorinfo').html('<p>只能填写数字</p>').removeClass("none");
+			setTimeout(function() {
+				$('.errorinfo').addClass("none");
+			}, 2000);
+        }else{
+            numDay_val = val; 
+        }
+        this.setState({"numDay":val});
+    },
+    numPerson:function(e){
+        var val = e.target.value;
+        if(isNaN(val)){
+            val = numPerson_val;
+            $('.errorinfo').html('<p>只能填写数字</p>').removeClass("none");
+			setTimeout(function() {
+				$('.errorinfo').addClass("none");
+			}, 2000);
+        }else{
+            numPerson_val = val; 
+        }
+        this.setState({"numPerson":val});
+    },
 	showCal:function(){
 		$('#startDate').datepicker('open');
 	},
@@ -170,14 +239,23 @@ var R_content = React.createClass({
 				            <div className="am-hide-sm-only am-u-md-6">*必填</div>
 				          </div>
 				          
-				           <div className="am-g am-margin-top">
+				          <div className="am-g am-margin-top">
 				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
 				              总人数
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-4">
-				              <input type="text" id="numPerson" className="am-input-sm" />
+				              <input type="text" id="numPerson" className="am-input-sm" value={this.state.numPerson} onChange={this.numPerson} />
 				            </div>
 				            <div className="am-hide-sm-only am-u-md-6">*必填</div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
+				              订单说明
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-10">
+				            	<textarea id="remark" rows="3"></textarea>
+				            </div>
 				          </div>
 				        </form>
 				      </div>
@@ -208,8 +286,6 @@ var R_content = React.createClass({
 				<div className="am-margin">
 				    <button type="button" onClick={this.createDoc} className="btn-c am-btn am-btn-primary am-btn-xs">提交保存</button>
 				    <button type="button" onClick={this.cancleDoc} className="btn-c am-btn am-btn-primary am-btn-xs">放弃保存</button>
-					<div className="am-alert am-alert-danger none errorinfo" data-am-alert></div>
-					<div className="am-alert am-alert-success none successinfo" data-am-alert></div>
 				</div>
 			</div>
 		);

@@ -1,6 +1,6 @@
 var R_content = React.createClass({
 	getInitialState: function() { 
-		return {bookingno: "",saler:"",operator:"",startDate:"",ShipName:""};
+		return {bookingno: "",saler:"",operator:"",startDate:"",ShipName:"",numDay:"",txtLine:"",txtRoom:"",numPerson:"",remark:""};
 	},
 	cancleDoc:function(){
 		window.location = 'index.html';
@@ -20,6 +20,11 @@ var R_content = React.createClass({
 				o.setState({operator:data[0].operator});
 				o.setState({startDate:data[0].startDate});
 				o.setState({ShipName:data[0].ShipName});
+				o.setState({numDay:data[0].numDay});
+				o.setState({txtLine:data[0].txtLine});
+				o.setState({txtRoom:data[0].txtRoom});
+				o.setState({numPerson:data[0].numPerson});
+				$('#remark').html(data[0].remark);
 			}
 		});
 	},
@@ -48,91 +53,92 @@ var R_content = React.createClass({
 				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
 				              订单编号
 				            </div>
-				            <div className="am-u-sm-8 am-u-md-4">
+				            <div className="am-u-sm-8 am-u-md-10">
 				              {this.state.bookingno}
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-6"></div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
 				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
 				              销售人
 				            </div>
-				            <div className="am-u-sm-8 am-u-md-4">
+				            <div className="am-u-sm-8 am-u-md-10">
 				              {this.state.saler}
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-6"></div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
 				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
 				              操作人
 				            </div>
-				            <div className="am-u-sm-8 am-u-md-4">
+				            <div className="am-u-sm-8 am-u-md-10">
 				              {this.state.operator}
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-6"></div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
 				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
 				              出发日期
 				            </div>
-				            <div className="am-u-sm-8 am-u-md-4">
+				            <div className="am-u-sm-8 am-u-md-10">
 				              	{this.state.startDate}
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-6"></div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
 				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
 				              邮轮名称
 				            </div>
-				            <div className="am-u-sm-8 am-u-md-4">
+				            <div className="am-u-sm-8 am-u-md-10">
 				              	{this.state.ShipName}
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-6"></div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
 				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
 				              天数
 				            </div>
-				            <div className="am-u-sm-8 am-u-md-4">
-				              <input type="text" id="numDay" className="am-input-sm" />
+				            <div className="am-u-sm-8 am-u-md-10">
+				              {this.state.numDay}
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-6">*必填</div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
 				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
 				              航线
 				            </div>
-				            <div className="am-u-sm-8 am-u-md-4">
-				              <input type="text" id="txtLine" className="am-input-sm" />
+				            <div className="am-u-sm-8 am-u-md-10">
+				            	{this.state.txtLine}
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-6">*必填</div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
 				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
 				              房型数量
 				            </div>
-				            <div className="am-u-sm-8 am-u-md-4">
-				              <input type="text" id="txtRoom" className="am-input-sm" />
+				            <div className="am-u-sm-8 am-u-md-10">
+				            	{this.state.txtRoom}
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-6">*必填</div>
 				          </div>
 				          
-				           <div className="am-g am-margin-top">
+				          <div className="am-g am-margin-top">
 				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
 				              总人数
 				            </div>
-				            <div className="am-u-sm-8 am-u-md-4">
-				              <input type="text" id="numPerson" className="am-input-sm" />
+				            <div className="am-u-sm-8 am-u-md-10">
+				            	{this.state.numPerson}
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-6">*必填</div>
 				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
+				              订单说明
+				            </div>
+				            <div id="remark" className="am-u-sm-8 am-u-md-10">
+				            	
+				            </div>
+				          </div>
+				          
 				        </form>
 				      </div>
 				      <div className="am-tab-panel am-fade" id="tab2">

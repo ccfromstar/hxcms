@@ -26,6 +26,10 @@ var R_content = React.createClass({
 			success: function(data) {
 				if(data == "300"){
 					o.toPage(window.sessionStorage.getItem("indexPage"));
+					$('.successinfo').html('<p>删除成功</p>').removeClass("none");
+					setTimeout(function() {
+						$('.successinfo').addClass("none");
+					}, 2000);
 				}
 			}
 		});
@@ -95,9 +99,11 @@ var R_content = React.createClass({
 			);
 		});
 		var pager=[];
+		var iPa = Number(window.sessionStorage.getItem("indexPage"));
+		iPa = iPa?iPa:1;
         for(var i=1;i<(this.state.totalpage)+1;i++){
         	var hasClass = "";
-        	if(i == Number(window.sessionStorage.getItem("indexPage"))){
+        	if(i == iPa){
         		hasClass = "am-active";
         	}
             pager.push(
@@ -109,8 +115,7 @@ var R_content = React.createClass({
 			
 			    <div className="am-cf am-padding">
 			      <div className="am-fl am-cf"><strong className="am-text-primary am-text-lg">销售订单</strong> / <small>列表</small></div>
-			    </div>
-			    
+				</div>
 			    <div className="am-g">
 			      <div className="am-u-sm-12 am-u-md-12">
 			        <div className="am-btn-toolbar">
@@ -151,7 +156,7 @@ var R_content = React.createClass({
 				</div>
 				<div className="am-modal am-modal-confirm" tabIndex="-1" id="del-confirm">
 				  <div className="am-modal-dialog">
-				    <div className="am-modal-hd">Amaze UI</div>
+				    <div className="am-modal-hd">提示</div>
 				    <div className="am-modal-bd">
 				      你，确定要删除这条记录吗？
 				    </div>
