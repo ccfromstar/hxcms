@@ -18,6 +18,7 @@ var R_footer = React.createClass({
 				<p className="am-padding-left">© 2016 上海荟邮网络科技有限公司.</p>
 				<div className="am-alert am-alert-danger none errorinfo" data-am-alert></div>
 				<div className="am-alert am-alert-success none successinfo" data-am-alert></div>
+				<div className="am-alert am-alert-warning none loadinfo" data-am-alert></div>
 			</footer>
 		);
 	}

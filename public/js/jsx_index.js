@@ -3,6 +3,9 @@ var R_content = React.createClass({
 		return {data: [],total:0,totalpage: [],isFirst:"am-disabled",isLast:"am-disabled"};
 	},
 	newDoc:function(){
+		window.sessionStorage.setItem("mode","new");
+		window.sessionStorage.removeItem("editid");
+		window.sessionStorage.removeItem("startDate");
 		window.location = 'booking.html';
 	},
 	readDoc:function(id){
@@ -14,6 +17,14 @@ var R_content = React.createClass({
 		e.preventDefault();
 		window.sessionStorage.setItem("delid",id);
 		$("#del-confirm").modal();
+	},
+	editDoc:function(id,startDate,e){
+		var o = this;
+		e.preventDefault();
+		window.sessionStorage.setItem("editid",id);
+		window.sessionStorage.setItem("startDate",startDate);
+		window.sessionStorage.setItem("mode","edit");
+		window.location = 'booking.html';
 	},
 	delsql:function(){
 		var o = this;
@@ -90,7 +101,7 @@ var R_content = React.createClass({
 	              <td>
 	                <div className="am-btn-toolbar">
 	                  <div className="am-btn-group am-btn-group-xs">
-	                    <button className="am-btn am-btn-default am-btn-xs am-text-secondary"><span className="am-icon-pencil-square-o"></span> 编辑</button>
+	                    <button onClick={o.editDoc.bind(o,c.id,c.startDate)} className="am-btn am-btn-default am-btn-xs am-text-secondary"><span className="am-icon-pencil-square-o"></span> 编辑</button>
 	                    <button onClick={o.delDoc.bind(o,c.id)} className="am-btn am-btn-default am-btn-xs am-text-danger"><span className="am-icon-trash-o"></span> 删除</button>
 	                  </div>
 	                </div>

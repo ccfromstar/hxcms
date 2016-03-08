@@ -1,8 +1,64 @@
-var numDay_val = ""; /*保存上次的值*/
+var supply_total_val = ""; /*保存上次的值*/
 var numPerson_val = ""; /*保存上次的值*/
+var R_supplylist = React.createClass({
+	getInitialState:function(){
+        return {numSupply:1};
+    },
+    addsp:function(){
+    	var n = Number(this.state.numSupply)+1;
+    	this.setState({numSupply:n});
+    },
+    plussp:function(){
+    	var n = Number(this.state.numSupply)-1;
+    	if(n == 0){
+    		$('.errorinfo').html('<p>只剩一条记录不能删除</p>').removeClass("none");
+			setTimeout(function() {
+				$('.errorinfo').addClass("none");
+			}, 2000);
+			return false;
+    	}
+    	this.setState({numSupply:n});
+    },
+	render:function(){
+		var list=[];
+        for(var i=0;i<this.state.numSupply;i++){
+            list.push(
+               <tr>
+	              <td><input type="text" id="sp_type" className="am-input-sm" /></td>
+	              <td><input type="text" id="sp_paydate" className="am-input-sm" /></td>
+	              <td><input type="text" id="sp_paynum" className="am-input-sm" /></td>
+	              <td><input type="text" id="sp_payer" className="am-input-sm" /></td>
+	              <td><input type="text" id="sp_geter" className="am-input-sm" /></td>
+	            </tr>
+            )
+        }
+		return(
+			<div>
+				<table className="am-table am-table-striped am-table-hover table-main">
+					<thead>
+					   	<tr>
+					        <th>款项类型</th>
+				            <th>付款日期</th>
+				            <th>付款金额</th>
+				            <th>付款人</th>
+				            <th>收款方</th>
+					    </tr>
+					</thead>
+					<tbody>
+					    {list}
+					</tbody>
+				</table>
+				<button type="button" onClick={this.addsp} className="btn-c am-btn am-btn-primary am-btn-xs">增加</button>
+				<button type="button" onClick={this.plussp} className="btn-c am-btn am-btn-primary am-btn-xs">删除</button>
+			</div>
+		);
+	}
+});
 var R_content = React.createClass({
-	 getInitialState:function(){
-        return {numDay:""};
+	getInitialState:function(){
+		var mode = window.sessionStorage.getItem('mode');
+		var smallname = (mode == "edit")?"编辑":"新建";
+        return {numDay:"",startDate:window.sessionStorage.getItem('startDate'),supply_total:"",smallname:smallname};
     },
 	createDoc:function(){
 		var bookingno = $('#bookingno').val();
@@ -15,6 +71,15 @@ var R_content = React.createClass({
 		var txtRoom = $('#txtRoom').val();
 		var numPerson = $('#numPerson').val();
 		var remark = $('#remark').val();
+		
+		var supplyfile = $('#supplyfile').val();
+		var supply_company = $('#supply_company').val();
+		var supply_name = $('#supply_name').val();
+		var supply_tel = $('#supply_tel').val();
+		var supply_total = $('#supply_total').val();
+		var supply_deadline = $('#supply_deadline').val();
+		
+		var mode = window.sessionStorage.getItem('mode');
 		
 		if (!bookingno) {
 			$('.errorinfo').html('<p>订单编号不能为空</p>').removeClass("none");
@@ -76,6 +141,7 @@ var R_content = React.createClass({
 			type: "post",
 			url: hosts + "/service/createBooking",
 			data: {
+				mode:mode,
 				bookingno: bookingno,
 				saler: saler,
 				operator:operator,
@@ -86,14 +152,26 @@ var R_content = React.createClass({
 				txtRoom:txtRoom,
 				numPerson:numPerson,
 				remark:remark,
+				supplyfile:supplyfile,
+				supply_company:supply_company,
+				supply_name:supply_name,
+				supply_tel:supply_tel,
+				supply_total:supply_total,
+				supply_deadline:supply_deadline,
 				userid: window.sessionStorage.getItem('cid')
 			},
 			success: function(data) {
+				console.log(data);
 				if(data == "300"){
 					$('.successinfo').html('<p>保存成功</p>').removeClass("none");
 					setTimeout(function() {
 						window.location = 'index.html';
 					}, 1000);
+				}else if(data == "400"){
+					$('.errorinfo').html('<p>订单编号重复</p>').removeClass("none");
+					setTimeout(function() {
+						$('.errorinfo').addClass("none");
+					}, 2000);
 				}
 			}
 		});
@@ -101,18 +179,18 @@ var R_content = React.createClass({
 	cancleDoc:function(){
 		window.location = 'index.html';
 	},
-	numDay:function(e){
+	supply_total:function(e){
         var val = e.target.value;
         if(isNaN(val)){
-            val = numDay_val;
+            val = supply_total_val;
             $('.errorinfo').html('<p>只能填写数字</p>').removeClass("none");
 			setTimeout(function() {
 				$('.errorinfo').addClass("none");
 			}, 2000);
         }else{
-            numDay_val = val; 
+            supply_total_val = val; 
         }
-        this.setState({"numDay":val});
+        this.setState({"supply_total":val});
     },
     numPerson:function(e){
         var val = e.target.value;
@@ -130,15 +208,58 @@ var R_content = React.createClass({
 	showCal:function(){
 		$('#startDate').datepicker('open');
 	},
+	UploadSupplyer:function(){
+		var path = document.all.fileUp.value;
+		if(!path){return false;}
+		$('.loadinfo').html('<p>文件上传中...</p>').removeClass("none");
+        $('#supplyformFile').submit();
+	},
 	componentDidMount:function(){
+		var o = this;
 		$('#operator').val(window.sessionStorage.getItem('cname'));
+		var mode = window.sessionStorage.getItem('mode');
+		if(mode == "edit"){
+			var editid = window.sessionStorage.getItem("editid");
+			$.ajax({
+				type: "post",
+				url: hosts + "/service/getBookingById",
+				data: {
+					id:editid
+				},
+				success: function(data) {
+					$('#bookingno').val(data[0].bookingno).attr("readonly","readonly");
+					$('#saler').val(data[0].saler);
+					$('#operator').val(data[0].operator);
+					//$('#startDate').val(data[0].startDate);
+					$('#ShipName').val(data[0].ShipName);
+					$('#numDay').val(data[0].numDay);
+					$('#txtLine').val(data[0].txtLine);
+					$('#txtRoom').val(data[0].txtRoom);
+					$('#numPerson').val(data[0].numPerson);
+					$('#remark').html(data[0].remark);
+					
+					$('#supply_company').val(data[0].supply_company);
+					$('#supply_name').val(data[0].supply_name);
+					$('#supply_tel').val(data[0].supply_tel);
+					$('#supply_total').val(data[0].supply_total);
+					$('#supply_deadline').val(data[0].supply_deadline);
+					$('#supplyfile').val(data[0].supplyfile);
+					if(data[0].supplyfile){
+						var files = '<span class="am-icon-file-o"></span> <a target="_blank" href="'+hosts+'/files/'+data[0].supplyfile+'">供应商确认单</a>';
+						$('#supplyfile_div').html(files);
+					}
+					
+				}
+			});
+		}
+		$('#supplyformFile').attr('action',hosts + "/service/uploaddo");
 	},
 	render:function(){
 		return(
 			<div className="admin-content">
 			
 			   	<div className="am-cf am-padding">
-					<div className="am-fl am-cf"><strong className="am-text-primary am-text-lg">销售订单</strong> / <small>表单</small></div>
+					<div className="am-fl am-cf"><strong className="am-text-primary am-text-lg">销售订单</strong> / <small>{this.state.smallname}</small></div>
 				</div>
 			    
 			    <div className="am-tabs am-margin" data-am-tabs>
@@ -152,7 +273,7 @@ var R_content = React.createClass({
 				
 				    <div className="am-tabs-bd">
 				      <div className="am-tab-panel am-fade am-in am-active" id="tab1">
-				       	<form className="am-form">
+				       	<div className="am-form">
 				       	
 				          <div className="am-g am-margin-top">
 				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
@@ -190,7 +311,7 @@ var R_content = React.createClass({
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-4">
 				              	<div className="am-input-group am-datepicker-date">
-								  <input type="text" id="startDate" className="am-form-field" readOnly />
+								  <input type="text" id="startDate" className="am-form-field" defaultValue={this.state.startDate} readOnly />
 								  <span className="am-input-group-btn am-datepicker-add-on">
 								    <button onClick={this.showCal} className="am-btn am-btn-default" type="button"><span className="am-icon-calendar"></span> </button>
 								  </span>
@@ -257,13 +378,88 @@ var R_content = React.createClass({
 				            	<textarea id="remark" rows="3"></textarea>
 				            </div>
 				          </div>
-				        </form>
+				        </div>
 				      </div>
 				      <div className="am-tab-panel am-fade" id="tab2">
 				       	2
 				      </div>
 				      <div className="am-tab-panel am-fade" id="tab3">
-				       	3
+				       	<div className="am-form">
+				       	
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              供应商公司
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="supply_company" className="am-input-sm" />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              联系姓名
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="supply_name" className="am-input-sm" />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              联系电话
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="supply_tel" className="am-input-sm" />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              采购金额
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="supply_total" className="am-input-sm" value={this.state.supply_total} onChange={this.supply_total} />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              付款时限
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="supply_deadline" className="am-input-sm" />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              供应商确认单上传
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              	<form id="supplyformFile" name="formFile" method="post" target="frameFile"
+    encType="multipart/form-data">
+				              		<div className="am-form-file">
+									  <button type="button" className="am-btn am-btn-default am-btn-sm">
+									    <i className="am-icon-cloud-upload"></i> 选择要上传的文件
+									  </button>
+									  <input type="file" id="fileUp" onChange={this.UploadSupplyer} name="fileUp" />
+									</div>                                    
+									<div id="supplyfile_div"></div>
+				              	</form>
+				              	<iframe id="frameFile" name="frameFile" style={{display: 'none'}}></iframe>
+				              	<input type="hidden" id="supplyfile" />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <R_supplylist />
+				          
+				        </div>
 				      </div>
 				      <div className="am-tab-panel am-fade" id="tab4">
 				       	4
@@ -284,8 +480,8 @@ var R_content = React.createClass({
 				</div>
 				
 				<div className="am-margin">
-				    <button type="button" onClick={this.createDoc} className="btn-c am-btn am-btn-primary am-btn-xs">提交保存</button>
-				    <button type="button" onClick={this.cancleDoc} className="btn-c am-btn am-btn-primary am-btn-xs">放弃保存</button>
+				    <button type="button" onClick={this.createDoc} className="btn-c am-btn am-btn-primary am-btn-xs">保存</button>
+				    <button type="button" onClick={this.cancleDoc} className="btn-c am-btn am-btn-primary am-btn-xs">关闭</button>
 				</div>
 			</div>
 		);

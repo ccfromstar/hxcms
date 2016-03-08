@@ -24,6 +24,7 @@ exports.servicedo = function(req, res) {
 			}
 		});
 	}else if(_sql == "createBooking"){
+		var mode = req.param("mode");
 		var bookingno = req.param("bookingno");
 		var saler = req.param("saler");
 		var operator = req.param("operator");
@@ -35,15 +36,71 @@ exports.servicedo = function(req, res) {
 		var numPerson = req.param("numPerson");
 		var remark = req.param("remark");
 		var userid = req.param("userid");
-	
-		var sql = "insert into booking (bookingno,lastModify,userid,saler,operator,startDate,ShipName,numDay,txtLine,txtRoom,numPerson,remark) values('"+bookingno+"',now(),"+userid+",'"+saler+"','"+operator+"','"+startDate+"','"+ShipName+"','"+numDay+"','"+txtLine+"','"+txtRoom+"',"+numPerson+",'"+remark+"')";
-		debug(sql);
-		mysql.query(sql, function(err, result) {
-			if (err) return console.error(err.stack);
-			if(result.affectedRows == 1){
-				res.send("300");
-			}
-		});
+		
+		var supplyfile = req.param("supplyfile");
+		var supply_company = req.param("supply_company");
+		var supply_name = req.param("supply_name");
+		var supply_tel = req.param("supply_tel");
+		var supply_total = req.param("supply_total");
+		var supply_deadline = req.param("supply_deadline");
+		
+		/*编辑模式*/
+		if(mode == "edit"){
+			var sql = "update booking set ";
+			sql += " lastModify = now(),";
+			sql += " saler = '"+saler+"',";
+			sql += " startDate = '"+startDate+"',";
+			sql += " ShipName = '"+ShipName+"',";
+			sql += " numDay = '"+numDay+"',";
+			sql += " txtLine = '"+txtLine+"',";
+			sql += " txtRoom = '"+txtRoom+"',";
+			sql += " numPerson = "+numPerson+",";
+			/*第3页*/
+			sql += " supply_company = '"+supply_company+"',";
+			sql += " supplyfile = '"+supplyfile+"',";
+			sql += " supply_name = '"+supply_name+"',";
+			sql += " supply_tel = '"+supply_tel+"',";
+			sql += " supply_total = "+supply_total+",";
+			sql += " supply_deadline = '"+supply_deadline+"',";
+			
+			sql += " remark = '"+remark+"'";
+			sql += " where bookingno = '"+bookingno+"'";
+			debug(sql);
+			mysql.query(sql, function(err, result) {
+				if (err) return console.error(err.stack);
+				if(result.affectedRows == 1){
+					res.send("300");
+				}
+			});
+		}else{
+			/*检查订单编号是否重复*/
+			var sql1 = "select id from booking where bookingno = '"+bookingno+"'";
+			var sql2 = "insert into booking (bookingno,lastModify,userid,saler,operator,startDate,ShipName,numDay,txtLine,txtRoom,numPerson,remark,supplyfile,";
+			sql2 += "supply_company,supply_name,supply_tel,supply_total,supply_deadline)";
+			sql2 += " values('"+bookingno+"',now(),"+userid+",'"+saler+"','"+operator+"','"+startDate+"','"+ShipName+"','"+numDay+"','"+txtLine+"','"+txtRoom+"',"+numPerson+",'"+remark+"','";
+			sql2 += supplyfile+"','"+supply_company+"','"+supply_name+"','"+supply_tel+"',"+supply_total+",'"+supply_deadline+"')";
+			debug(sql2);
+			async.waterfall([function(callback) {
+			    mysql.query(sql1, function(err, result) {
+			        if (err) return console.error(err.stack);
+			        var hasd = result[0]?"400":null;
+			        callback(hasd, result);
+			    });
+			}, function(result, callback) {
+			    mysql.query(sql2, function(err, rows) {
+			       if (err) return console.error(err.stack);
+			        callback(err, rows);
+			    });
+			}], function(err,rows) {
+			    if(err){
+			    	res.send(err);
+			    }else{
+			    	if(rows.affectedRows == 1){
+						res.send("300");
+					}
+				}
+			});	
+		}
 	}else if(_sql == "delBooking"){
 		var id = req.param("id");
 		var sql = "delete from booking where id = " + id;
@@ -108,6 +165,13 @@ exports.servicedo = function(req, res) {
 				res.json(ret);
 			}
 		});
+	}else if(_sql == "uploaddo"){
+		res.setHeader("Access-Control-Allow-Origin", "*");
+		var fname = req.files.fileUp.path.replace("public\\files\\", "").replace("public/files/", "");
+		res.writeHead(200, {'Content-type' : 'text/html'});
+		res.write('<script>');
+		res.write('window.parent.postMessage("'+fname+'","*");');
+		res.end('</script>');
 	}
 }
 

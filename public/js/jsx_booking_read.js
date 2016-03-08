@@ -1,6 +1,8 @@
 var R_content = React.createClass({
 	getInitialState: function() { 
-		return {bookingno: "",saler:"",operator:"",startDate:"",ShipName:"",numDay:"",txtLine:"",txtRoom:"",numPerson:"",remark:""};
+		return {bookingno: "",saler:"",operator:"",startDate:"",ShipName:"",numDay:"",txtLine:"",txtRoom:"",numPerson:"",remark:"",
+		supply_company:"",supply_name:"",supply_tel:"",supply_total:"",supply_deadline:""
+		};
 	},
 	cancleDoc:function(){
 		window.location = 'index.html';
@@ -25,6 +27,16 @@ var R_content = React.createClass({
 				o.setState({txtRoom:data[0].txtRoom});
 				o.setState({numPerson:data[0].numPerson});
 				$('#remark').html(data[0].remark);
+				
+				o.setState({supply_company:data[0].supply_company});
+				o.setState({supply_name:data[0].supply_name});
+				o.setState({supply_tel:data[0].supply_tel});
+				o.setState({supply_total:data[0].supply_total});
+				o.setState({supply_deadline:data[0].supply_deadline});
+				if(data[0].supplyfile){
+					var files = '<span class="am-icon-file-o"></span> <a target="_blank" href="'+hosts+'/files/'+data[0].supplyfile+'">供应商确认单</a>';
+					$('#supplyfile').html(files);
+				}
 			}
 		});
 	},
@@ -33,7 +45,7 @@ var R_content = React.createClass({
 			<div className="admin-content">
 			
 			   	<div className="am-cf am-padding">
-					<div className="am-fl am-cf"><strong className="am-text-primary am-text-lg">销售订单</strong> / <small>表单</small></div>
+					<div className="am-fl am-cf"><strong className="am-text-primary am-text-lg">销售订单</strong> / <small>查看</small></div>
 				</div>
 			    
 			    <div className="am-tabs am-margin" data-am-tabs>
@@ -145,7 +157,67 @@ var R_content = React.createClass({
 				       	2
 				      </div>
 				      <div className="am-tab-panel am-fade" id="tab3">
-				       	3
+				      	<div className="am-form">
+				       	
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              供应商公司
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				            	{this.state.supply_company}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              联系姓名
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				            	{this.state.supply_name}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              联系电话
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				            	{this.state.supply_tel}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              采购金额
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				            	{this.state.supply_total}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              付款时限
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				            	{this.state.supply_deadline}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              供应商确认单
+				            </div>
+				            <div id="supplyfile" className="am-u-sm-8 am-u-md-4">					
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				        </div>
 				      </div>
 				      <div className="am-tab-panel am-fade" id="tab4">
 				       	4
