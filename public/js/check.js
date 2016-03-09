@@ -4,3 +4,7 @@ $(function() {
 		window.location = 'login.html';
 	}
 });
+
+function jqradio(name){
+    return $(':checked[name="' + name + '"]').val();
+}

@@ -1,5 +1,8 @@
 var supply_total_val = ""; /*保存上次的值*/
-var numPerson_val = ""; /*保存上次的值*/
+var buy_total_val = "";
+var numPerson_val = ""; 
+
+/*上家信息*/
 var R_supplylist = React.createClass({
 	getInitialState:function(){
 		window.sessionStorage.setItem('numSupply',1);
@@ -88,6 +91,96 @@ var R_supplylist = React.createClass({
 		);
 	}
 });
+/*下家信息*/
+var R_buylist = React.createClass({
+	getInitialState:function(){
+		window.sessionStorage.setItem('numBuy',1);
+        return {numBuy:1};
+    },
+    addsp:function(){
+    	var n = Number(this.state.numBuy)+1;
+    	window.sessionStorage.setItem('numBuy',n);
+    	this.setState({numBuy:n});
+    },
+    plussp:function(){
+    	var n = Number(this.state.numBuy)-1;
+    	if(n == 0){
+    		$('.errorinfo').html('<p>只剩一条记录不能删除</p>').removeClass("none");
+			setTimeout(function() {
+				$('.errorinfo').addClass("none");
+			}, 2000);
+			return false;
+    	}
+    	window.sessionStorage.setItem('numBuy',n);
+    	this.setState({numBuy:n});
+    },
+    componentDidMount:function(){
+		var o = this;
+		$('#operator').val(window.sessionStorage.getItem('cname'));
+		var mode = window.sessionStorage.getItem('mode');
+		if(mode == "edit"){
+			var editid = window.sessionStorage.getItem("editid");
+			/*
+			$.ajax({
+				type: "post",
+				url: hosts + "/service/getSupplyrecordById",
+				data: {
+					id:editid
+				},
+				success: function(data) {
+					var num = 0;
+					for(var i in data){
+						num += 1;
+					}
+					window.sessionStorage.setItem('numSupply',num);
+    				o.setState({numSupply:num});
+    				for(var i in data){
+						$('#sp_type_'+i).val(data[i].sp_type);
+						$('#sp_paydate_'+i).val(data[i].sp_paydate);
+						$('#sp_paynum_'+i).val(data[i].sp_paynum);
+						$('#sp_payer_'+i).val(data[i].sp_payer);
+						$('#sp_geter_'+i).val(data[i].sp_geter);
+					}
+				}
+			});*/
+		}
+	},
+	render:function(){
+		var list=[];
+        for(var i=0;i<this.state.numBuy;i++){
+            list.push(
+               <tr>
+	              <td><input type="text" id={"by_type_"+i} className="am-input-sm" /></td>
+	              <td><input type="text" id={"by_paydate_"+i} className="am-input-sm" /></td>
+	              <td><input type="text" id={"by_paynum_"+i} className="am-input-sm" /></td>
+	              <td><input type="text" id={"by_payer_"+i} className="am-input-sm" /></td>
+	              <td><input type="text" id={"by_geter_"+i} className="am-input-sm" /></td>
+	            </tr>
+            )
+        }
+		return(
+			<div>
+				<table className="am-table am-table-striped am-table-hover table-main">
+					<thead>
+					   	<tr>
+					        <th>款项类型</th>
+				            <th>付款日期</th>
+				            <th>付款金额</th>
+				            <th>付款人</th>
+				            <th>收款方(华夏/老大)</th>
+					    </tr>
+					</thead>
+					<tbody>
+					    {list}
+					</tbody>
+				</table>
+				<button type="button" onClick={this.addsp} className="btn-c am-btn am-btn-primary am-btn-xs">增加</button>
+				<button type="button" onClick={this.plussp} className="btn-c am-btn am-btn-primary am-btn-xs">删除</button>
+			</div>
+		);
+	}
+});
+/*表单信息*/
 var R_content = React.createClass({
 	getInitialState:function(){
 		var mode = window.sessionStorage.getItem('mode');
@@ -118,11 +211,24 @@ var R_content = React.createClass({
 		var supply_total = $('#supply_total').val();
 		var supply_deadline = $('#supply_deadline').val();
 		
+		var buy_type = jqradio('buy_type');
+		var buy_contract = jqradio('buy_contract');
+		var buy_invoice = jqradio('buy_invoice');
+		
+		var buy_company = $('#buy_company').val();
+		var buy_name = $('#buy_name').val();
+		var buy_tel = $('#buy_tel').val();
+		var buy_total = $('#buy_total').val();
+		var buy_deadline = $('#buy_deadline').val();
+		var buy_contractNo = $('#buy_contractNo').val();
+		var buy_invoiceHead = $('#buy_invoiceHead').val();
+		
 		var sp_type = null;
 		var sp_paydate = null;
 		var sp_paynum = null;
 		var sp_payer = null;
 		var sp_geter = null;
+		
 		var n = window.sessionStorage.getItem('numSupply');
 		for(var i=0;i<n;i++){
 			if(!sp_type){
@@ -198,6 +304,17 @@ var R_content = React.createClass({
 			}, 2000);
 			return false;
 		}
+		
+		/*计算订单利润和利润率*/
+		var profit = 0;
+		var profitRate = 0;
+		if(buy_total && supply_total && Number(buy_total) != 0){
+			profit = Number(buy_total) - Number(supply_total);
+			profitRate = (profit / Number(buy_total)).toFixed(4);
+		}
+		$("#profit").val(profit);
+		$("#profitRate").val(profitRate);
+		
 		$.ajax({
 			type: "post",
 			url: hosts + "/service/createBooking",
@@ -225,7 +342,20 @@ var R_content = React.createClass({
 				sp_payer:sp_payer,
 				sp_geter:sp_geter,
 				numSupply:n,
-				userid: window.sessionStorage.getItem('cid')
+				buy_type:buy_type,
+				buy_company:buy_company,
+				buy_name:buy_name,
+				buy_tel:buy_tel,
+				buy_total:buy_total,
+				buy_deadline:buy_deadline,
+				buy_contractNo:buy_contractNo,
+				buy_invoiceHead:buy_invoiceHead,
+				buy_contract:buy_contract,
+				buy_invoice:buy_invoice,
+				profit:profit,
+				profitRate:profitRate,
+				userid: window.sessionStorage.getItem('cid'),
+				editid: window.sessionStorage.getItem("editid")
 			},
 			success: function(data) {
 				console.log(data);
@@ -258,6 +388,19 @@ var R_content = React.createClass({
             supply_total_val = val; 
         }
         this.setState({"supply_total":val});
+    },
+    buy_total:function(e){
+        var val = e.target.value;
+        if(isNaN(val)){
+            val = buy_total_val;
+            $('.errorinfo').html('<p>只能填写数字</p>').removeClass("none");
+			setTimeout(function() {
+				$('.errorinfo').addClass("none");
+			}, 2000);
+        }else{
+            buy_total_val = val; 
+        }
+        this.setState({"buy_total":val});
     },
     numPerson:function(e){
         var val = e.target.value;
@@ -309,6 +452,9 @@ var R_content = React.createClass({
 					$('#supply_name').val(data[0].supply_name);
 					$('#supply_tel').val(data[0].supply_tel);
 					$('#supply_total').val(data[0].supply_total);
+					supply_total_val = data[0].supply_total;
+					o.setState({"supply_total":data[0].supply_total});
+					
 					$('#supply_deadline').val(data[0].supply_deadline);
 					$('#supplyfile').val(data[0].supplyfile);
 					if(data[0].supplyfile){
@@ -316,6 +462,40 @@ var R_content = React.createClass({
 						$('#supplyfile_div').html(files);
 					}
 					
+					$('#buy_company').val(data[0].buy_company);
+					$('#buy_name').val(data[0].buy_name);
+					$('#buy_tel').val(data[0].buy_tel);
+					$('#buy_total').val(data[0].buy_total);
+					$('#buy_deadline').val(data[0].buy_deadline);
+					$('#buy_contractNo').val(data[0].buy_contractNo);
+					$('#buy_invoiceHead').val(data[0].buy_invoiceHead);
+					
+					$("#profit").val(data[0].profit);
+					$("#profitRate").val(data[0].profitRate);
+					
+					if(data[0].buy_type == "同行"){
+						$("#buy_type_div").find("label").eq(0).addClass("am-active");
+						$("#buy_type_div").find("input").eq(0).attr("checked","checked");
+					}else if(data[0].buy_type == "直客"){
+						$("#buy_type_div").find("label").eq(1).addClass("am-active");
+						$("#buy_type_div").find("input").eq(1).attr("checked","checked");
+					}
+					
+					if(data[0].buy_contract == "是"){
+						$("#buy_contract_div").find("label").eq(0).addClass("am-active");
+						$("#buy_contract_div").find("input").eq(0).attr("checked","checked");
+					}else if(data[0].buy_contract == "否"){
+						$("#buy_contract_div").find("label").eq(1).addClass("am-active");
+						$("#buy_contract_div").find("input").eq(1).attr("checked","checked");
+					}
+					
+					if(data[0].buy_invoice == "是"){
+						$("#buy_invoice_div").find("label").eq(0).addClass("am-active");
+						$("#buy_invoice_div").find("input").eq(0).attr("checked","checked");
+					}else if(data[0].buy_invoice == "否"){
+						$("#buy_invoice_div").find("label").eq(1).addClass("am-active");
+						$("#buy_invoice_div").find("input").eq(1).attr("checked","checked");
+					}
 				}
 			});
 		}
@@ -439,6 +619,26 @@ var R_content = React.createClass({
 				          
 				          <div className="am-g am-margin-top">
 				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
+				              订单利润
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="profit" className="am-input-sm" readOnly />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-6">自动计算(下家金额-上家金额)</div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
+				              订单利润率
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="profitRate" className="am-input-sm" readOnly />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-6">自动计算(订单利润/下家金额)</div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
 				              订单说明
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-10">
@@ -448,7 +648,132 @@ var R_content = React.createClass({
 				        </div>
 				      </div>
 				      <div className="am-tab-panel am-fade" id="tab2">
-				       	2
+				      	<div className="am-form">
+				      	
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              采购人类型
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              	<div className="am-btn-group" id="buy_type_div" data-am-button>
+					              <label className="am-btn am-btn-default am-btn-xs">
+					                <input type="radio" name="buy_type" value="同行" >同行</input>
+					              </label>
+					              <label className="am-btn am-btn-default am-btn-xs">
+					                <input type="radio" name="buy_type" value="直客" >直客</input>
+					              </label>
+					            </div>
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              采购人公司
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="buy_company" className="am-input-sm" />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              联系人
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="buy_name" className="am-input-sm" />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              联系人电话
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="buy_tel" className="am-input-sm" />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              采购金额
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="buy_total" className="am-input-sm" value={this.state.buy_total} onChange={this.buy_total} />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              收款时限
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="buy_deadline" className="am-input-sm" />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              提供合同
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              	<div className="am-btn-group" id="buy_contract_div" data-am-button>
+					              <label className="am-btn am-btn-default am-btn-xs">
+					                <input type="radio" name="buy_contract" value="是" >是</input>
+					              </label>
+					              <label className="am-btn am-btn-default am-btn-xs">
+					                <input type="radio" name="buy_contract" value="否" >否</input>
+					              </label>
+					            </div>
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              合同编号
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="buy_contractNo" className="am-input-sm" />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              提供对方发票
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              	<div className="am-btn-group" id="buy_invoice_div" data-am-button>
+					              <label className="am-btn am-btn-default am-btn-xs">
+					                <input type="radio" name="buy_invoice" value="是" >是</input>
+					              </label>
+					              <label className="am-btn am-btn-default am-btn-xs">
+					                <input type="radio" name="buy_invoice" value="否" >否</input>
+					              </label>
+					            </div>
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              发票抬头/金额
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="buy_invoiceHead" className="am-input-sm" />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <R_buylist />
+				          
+				        </div>
 				      </div>
 				      <div className="am-tab-panel am-fade" id="tab3">
 				       	<div className="am-form">
@@ -485,7 +810,7 @@ var R_content = React.createClass({
 				          
 				          <div className="am-g am-margin-top">
 				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
-				              采购金额
+				              总金额
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-4">
 				              <input type="text" id="supply_total" className="am-input-sm" value={this.state.supply_total} onChange={this.supply_total} />

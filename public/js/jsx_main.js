@@ -28,7 +28,7 @@ var R_footer = React.createClass({
  * */
 var R_header = React.createClass({
 	componentDidMount:function(){
-		$('#cname').html(window.sessionStorage.getItem('cname'));
+		$('#cname').html(window.sessionStorage.getItem('cname')+"（"+window.sessionStorage.getItem('crole')+"）");
 	},
 	exit:function(e){
 		e.preventDefault();

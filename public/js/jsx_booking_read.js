@@ -1,7 +1,14 @@
 var R_content = React.createClass({
 	getInitialState: function() { 
-		return {bookingno: "",saler:"",operator:"",startDate:"",ShipName:"",numDay:"",txtLine:"",txtRoom:"",numPerson:"",remark:"",
-		supply_company:"",supply_name:"",supply_tel:"",supply_total:"",supply_deadline:""
+		var finish = '';
+		var role = window.sessionStorage.getItem('crole');
+		if(role == "业务员"){
+			finish = 'none';
+		}
+		return {finish:finish,bookingno: "",saler:"",operator:"",startDate:"",ShipName:"",numDay:"",txtLine:"",txtRoom:"",numPerson:"",remark:"",
+		supply_company:"",supply_name:"",supply_tel:"",supply_total:"",supply_deadline:"",
+		buy_type:"",buy_company:"",buy_name:"",buy_tel:"",buy_total:"",buy_deadline:"",buy_contractNo:"",buy_invoiceHead:"",buy_contract:"",buy_invoice:"",
+		profit:"",profitRate:""
 		};
 	},
 	cancleDoc:function(){
@@ -37,6 +44,21 @@ var R_content = React.createClass({
 					var files = '<span class="am-icon-file-o"></span> <a target="_blank" href="'+hosts+'/files/'+data[0].supplyfile+'">供应商确认单</a>';
 					$('#supplyfile').html(files);
 				}
+				
+				o.setState({buy_type:(data[0].buy_type)?(data[0].buy_type):""});
+				o.setState({buy_contract:(data[0].buy_contract)?(data[0].buy_contract):""});
+				o.setState({buy_invoice:(data[0].buy_invoice)?(data[0].buy_invoice):""});
+				
+				o.setState({buy_company:data[0].buy_company});
+				o.setState({buy_name:data[0].buy_name});
+				o.setState({buy_tel:data[0].buy_tel});
+				o.setState({buy_total:data[0].buy_total});
+				o.setState({buy_deadline:data[0].buy_deadline});
+				o.setState({buy_contractNo:data[0].buy_contractNo});
+				o.setState({buy_invoiceHead:data[0].buy_invoiceHead});
+				
+				o.setState({profit:data[0].profit});
+				o.setState({profitRate:(Number(data[0].profitRate)*100)+"%"});
 			}
 		});
 		$.ajax({
@@ -73,7 +95,7 @@ var R_content = React.createClass({
 				      <li className="am-active"><a href="#tab1">销售填写</a></li>
 				      <li><a href="#tab2">下家信息</a></li>
 				      <li><a href="#tab3">上家信息</a></li>
-				      <li><a href="#tab4">结团信息</a></li>
+				      <li><a href="#tab4" className={this.state.finish} >结团信息</a></li>
 				      <li><a href="#tab5">说明</a></li>
 				    </ul>
 				
@@ -82,7 +104,7 @@ var R_content = React.createClass({
 				       	<form className="am-form">
 				       	
 				          <div className="am-g am-margin-top">
-				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-left">
 				              订单编号
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-10">
@@ -91,7 +113,7 @@ var R_content = React.createClass({
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
-				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-left">
 				              销售人
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-10">
@@ -100,7 +122,7 @@ var R_content = React.createClass({
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
-				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-left">
 				              操作人
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-10">
@@ -109,7 +131,7 @@ var R_content = React.createClass({
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
-				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-left">
 				              出发日期
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-10">
@@ -118,7 +140,7 @@ var R_content = React.createClass({
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
-				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-left">
 				              邮轮名称
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-10">
@@ -127,7 +149,7 @@ var R_content = React.createClass({
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
-				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-left">
 				              天数
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-10">
@@ -136,7 +158,7 @@ var R_content = React.createClass({
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
-				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-left">
 				              航线
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-10">
@@ -145,7 +167,7 @@ var R_content = React.createClass({
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
-				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-left">
 				              房型数量
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-10">
@@ -154,7 +176,7 @@ var R_content = React.createClass({
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
-				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-left">
 				              总人数
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-10">
@@ -163,7 +185,25 @@ var R_content = React.createClass({
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
-				            <div className="am-u-sm-4 am-u-md-2 am-text-right">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-left">
+				              订单利润
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-10">
+				            	{this.state.profit}
+				            </div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-left">
+				              订单利润率
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-10">
+				            	{this.state.profitRate}
+				            </div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-left">
 				              订单说明
 				            </div>
 				            <div id="remark" className="am-u-sm-8 am-u-md-10">
@@ -174,13 +214,106 @@ var R_content = React.createClass({
 				        </form>
 				      </div>
 				      <div className="am-tab-panel am-fade" id="tab2">
-				       	2
+				       	<div className="am-form">
+				       	
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
+				              采购人类型
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				            	{this.state.buy_type}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
+				              采购人公司
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				            	{this.state.buy_company}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
+				              联系人
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				            	{this.state.buy_name}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
+				              联系人电话
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				            	{this.state.buy_tel}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
+				              采购金额
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				            	{this.state.buy_total}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
+				              收款时限
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				            	{this.state.buy_deadline}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
+				              提供合同
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				            	{this.state.buy_contract}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
+				              合同编号
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				            	{this.state.buy_contractNo}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
+				              提供对方发票
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				            	{this.state.buy_invoice}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
+				              发票抬头/金额
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				            	{this.state.buy_invoiceHead}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				        </div>
 				      </div>
 				      <div className="am-tab-panel am-fade" id="tab3">
 				      	<div className="am-form">
 				       	
 				          <div className="am-g am-margin-top">
-				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
 				              供应商公司
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-4">
@@ -190,7 +323,7 @@ var R_content = React.createClass({
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
-				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
 				              联系姓名
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-4">
@@ -200,7 +333,7 @@ var R_content = React.createClass({
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
-				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
 				              联系电话
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-4">
@@ -210,8 +343,8 @@ var R_content = React.createClass({
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
-				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
-				              采购金额
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
+				              总金额
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-4">
 				            	{this.state.supply_total}
@@ -220,7 +353,7 @@ var R_content = React.createClass({
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
-				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
 				              付款时限
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-4">
@@ -230,7 +363,7 @@ var R_content = React.createClass({
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
-				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
 				              供应商确认单
 				            </div>
 				            <div id="supplyfile" className="am-u-sm-8 am-u-md-4">					
