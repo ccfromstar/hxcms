@@ -44,6 +44,14 @@ exports.servicedo = function(req, res) {
 		var supply_total = req.param("supply_total");
 		var supply_deadline = req.param("supply_deadline");
 		
+		var sp_type = req.param("sp_type");
+		var sp_paydate = req.param("sp_paydate");
+		var sp_paynum = req.param("sp_paynum");
+		var sp_payer = req.param("sp_payer");
+		var sp_geter = req.param("sp_geter");
+		
+		var numSupply = req.param("numSupply");
+		
 		/*编辑模式*/
 		if(mode == "edit"){
 			var sql = "update booking set ";
@@ -60,8 +68,9 @@ exports.servicedo = function(req, res) {
 			sql += " supplyfile = '"+supplyfile+"',";
 			sql += " supply_name = '"+supply_name+"',";
 			sql += " supply_tel = '"+supply_tel+"',";
-			sql += " supply_total = "+supply_total+",";
+			sql += " supply_total = '"+supply_total+"',";
 			sql += " supply_deadline = '"+supply_deadline+"',";
+			sql += " numSupply = "+numSupply+",";
 			
 			sql += " remark = '"+remark+"'";
 			sql += " where bookingno = '"+bookingno+"'";
@@ -76,9 +85,9 @@ exports.servicedo = function(req, res) {
 			/*检查订单编号是否重复*/
 			var sql1 = "select id from booking where bookingno = '"+bookingno+"'";
 			var sql2 = "insert into booking (bookingno,lastModify,userid,saler,operator,startDate,ShipName,numDay,txtLine,txtRoom,numPerson,remark,supplyfile,";
-			sql2 += "supply_company,supply_name,supply_tel,supply_total,supply_deadline)";
+			sql2 += "supply_company,supply_name,supply_tel,supply_total,supply_deadline,numSupply)";
 			sql2 += " values('"+bookingno+"',now(),"+userid+",'"+saler+"','"+operator+"','"+startDate+"','"+ShipName+"','"+numDay+"','"+txtLine+"','"+txtRoom+"',"+numPerson+",'"+remark+"','";
-			sql2 += supplyfile+"','"+supply_company+"','"+supply_name+"','"+supply_tel+"',"+supply_total+",'"+supply_deadline+"')";
+			sql2 += supplyfile+"','"+supply_company+"','"+supply_name+"','"+supply_tel+"','"+supply_total+"','"+supply_deadline+"',"+numSupply+")";
 			debug(sql2);
 			async.waterfall([function(callback) {
 			    mysql.query(sql1, function(err, result) {
@@ -91,6 +100,29 @@ exports.servicedo = function(req, res) {
 			       if (err) return console.error(err.stack);
 			        callback(err, rows);
 			    });
+			}, function(rows, callback) {
+			    /*保存上家信息记录*/
+			   	var arr1 = sp_type.split("@");
+			   	var arr2 = sp_paydate.split("@");
+			   	var arr3 = sp_paynum.split("@");
+			   	var arr4 = sp_payer.split("@");
+			   	var arr5 = sp_geter.split("@");
+			   	var arrsql = [];
+			   	for(var i=0;i<arr1.length;i++){
+			   		arrsql.push("insert into supplyrecord (bookingid,sp_type,sp_paydate,sp_paynum,sp_payer,sp_geter) values ("+rows.insertId+",'"+arr1[i]+"','"+arr2[i]+"','"+arr3[i]+"','"+arr4[i]+"','"+arr5[i]+"');");
+			   	}
+			   	async.eachSeries(arrsql, function (item, callback) {
+				    debug(item);
+				    mysql.query(item, function (err, res) {
+				    	if(rows.affectedRows == 1){
+				        	callback(err, res);
+				       	}else{
+				       		callback('error', res);
+				       	}
+				    });
+				}, function (err) {
+				   callback(err, rows);
+				});
 			}], function(err,rows) {
 			    if(err){
 			    	res.send(err);
@@ -121,6 +153,14 @@ exports.servicedo = function(req, res) {
 			if(r){
 				result[0].remark = r.replace(/\n/g,"<br/>");
 			}
+			res.json(result);
+		});
+	}else if(_sql == "getSupplyrecordById"){
+		var id = req.param("id");
+		var sql = "select * from supplyrecord where bookingid = " + id;
+		debug(sql);
+		mysql.query(sql, function(err, result) {
+			if (err) return console.error(err.stack);
 			res.json(result);
 		});
 	}else if(_sql == "getBooking"){

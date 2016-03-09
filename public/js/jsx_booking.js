@@ -2,10 +2,12 @@ var supply_total_val = ""; /*保存上次的值*/
 var numPerson_val = ""; /*保存上次的值*/
 var R_supplylist = React.createClass({
 	getInitialState:function(){
+		window.sessionStorage.setItem('numSupply',1);
         return {numSupply:1};
     },
     addsp:function(){
     	var n = Number(this.state.numSupply)+1;
+    	window.sessionStorage.setItem('numSupply',n);
     	this.setState({numSupply:n});
     },
     plussp:function(){
@@ -17,18 +19,50 @@ var R_supplylist = React.createClass({
 			}, 2000);
 			return false;
     	}
+    	window.sessionStorage.setItem('numSupply',n);
     	this.setState({numSupply:n});
     },
+    componentDidMount:function(){
+		var o = this;
+		$('#operator').val(window.sessionStorage.getItem('cname'));
+		var mode = window.sessionStorage.getItem('mode');
+		if(mode == "edit"){
+			var editid = window.sessionStorage.getItem("editid");
+			$.ajax({
+				type: "post",
+				url: hosts + "/service/getSupplyrecordById",
+				data: {
+					id:editid
+				},
+				success: function(data) {
+					var num = 0;
+					for(var i in data){
+						num += 1;
+					}
+					window.sessionStorage.setItem('numSupply',num);
+    				o.setState({numSupply:num});
+    				for(var i in data){
+						$('#sp_type_'+i).val(data[i].sp_type);
+						$('#sp_paydate_'+i).val(data[i].sp_paydate);
+						$('#sp_paynum_'+i).val(data[i].sp_paynum);
+						$('#sp_payer_'+i).val(data[i].sp_payer);
+						$('#sp_geter_'+i).val(data[i].sp_geter);
+					}
+				}
+			});
+		}
+		$('#supplyformFile').attr('action',hosts + "/service/uploaddo");
+	},
 	render:function(){
 		var list=[];
         for(var i=0;i<this.state.numSupply;i++){
             list.push(
                <tr>
-	              <td><input type="text" id="sp_type" className="am-input-sm" /></td>
-	              <td><input type="text" id="sp_paydate" className="am-input-sm" /></td>
-	              <td><input type="text" id="sp_paynum" className="am-input-sm" /></td>
-	              <td><input type="text" id="sp_payer" className="am-input-sm" /></td>
-	              <td><input type="text" id="sp_geter" className="am-input-sm" /></td>
+	              <td><input type="text" id={"sp_type_"+i} className="am-input-sm" /></td>
+	              <td><input type="text" id={"sp_paydate_"+i} className="am-input-sm" /></td>
+	              <td><input type="text" id={"sp_paynum_"+i} className="am-input-sm" /></td>
+	              <td><input type="text" id={"sp_payer_"+i} className="am-input-sm" /></td>
+	              <td><input type="text" id={"sp_geter_"+i} className="am-input-sm" /></td>
 	            </tr>
             )
         }
@@ -40,7 +74,7 @@ var R_supplylist = React.createClass({
 					        <th>款项类型</th>
 				            <th>付款日期</th>
 				            <th>付款金额</th>
-				            <th>付款人</th>
+				            <th>付款人(华夏/老大)</th>
 				            <th>收款方</th>
 					    </tr>
 					</thead>
@@ -58,7 +92,12 @@ var R_content = React.createClass({
 	getInitialState:function(){
 		var mode = window.sessionStorage.getItem('mode');
 		var smallname = (mode == "edit")?"编辑":"新建";
-        return {numDay:"",startDate:window.sessionStorage.getItem('startDate'),supply_total:"",smallname:smallname};
+		var role = window.sessionStorage.getItem('crole');
+		var finish = '';
+		if(role == "业务员"){
+			finish = 'none';
+		}
+        return {finish:finish,numDay:"",startDate:window.sessionStorage.getItem('startDate'),supply_total:"",smallname:smallname};
     },
 	createDoc:function(){
 		var bookingno = $('#bookingno').val();
@@ -78,6 +117,28 @@ var R_content = React.createClass({
 		var supply_tel = $('#supply_tel').val();
 		var supply_total = $('#supply_total').val();
 		var supply_deadline = $('#supply_deadline').val();
+		
+		var sp_type = null;
+		var sp_paydate = null;
+		var sp_paynum = null;
+		var sp_payer = null;
+		var sp_geter = null;
+		var n = window.sessionStorage.getItem('numSupply');
+		for(var i=0;i<n;i++){
+			if(!sp_type){
+				sp_type = $("#sp_type_"+i).val();
+				sp_paydate = $("#sp_paydate_"+i).val();
+				sp_paynum = $("#sp_paynum_"+i).val();
+				sp_payer = $("#sp_payer_"+i).val();
+				sp_geter = $("#sp_geter_"+i).val();
+			}else{
+				sp_type = sp_type + "@" + $("#sp_type_"+i).val();
+				sp_paydate = sp_paydate + "@" + $("#sp_paydate_"+i).val();
+				sp_paynum = sp_paynum + "@" + $("#sp_paynum_"+i).val();
+				sp_payer = sp_payer + "@" + $("#sp_payer_"+i).val();
+				sp_geter = sp_geter + "@" + $("#sp_geter_"+i).val();
+			}
+		}
 		
 		var mode = window.sessionStorage.getItem('mode');
 		
@@ -158,6 +219,12 @@ var R_content = React.createClass({
 				supply_tel:supply_tel,
 				supply_total:supply_total,
 				supply_deadline:supply_deadline,
+				sp_type:sp_type,
+				sp_paydate:sp_paydate,
+				sp_paynum:sp_paynum,
+				sp_payer:sp_payer,
+				sp_geter:sp_geter,
+				numSupply:n,
 				userid: window.sessionStorage.getItem('cid')
 			},
 			success: function(data) {
@@ -267,7 +334,7 @@ var R_content = React.createClass({
 				      <li className="am-active"><a href="#tab1">销售填写</a></li>
 				      <li><a href="#tab2">下家信息</a></li>
 				      <li><a href="#tab3">上家信息</a></li>
-				      <li><a href="#tab4">结团信息</a></li>
+				      <li><a href="#tab4" className={this.state.finish}>结团信息</a></li>
 				      <li><a href="#tab5">说明</a></li>
 				    </ul>
 				
