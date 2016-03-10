@@ -120,10 +120,10 @@ var R_buylist = React.createClass({
 		var mode = window.sessionStorage.getItem('mode');
 		if(mode == "edit"){
 			var editid = window.sessionStorage.getItem("editid");
-			/*
+			
 			$.ajax({
 				type: "post",
-				url: hosts + "/service/getSupplyrecordById",
+				url: hosts + "/service/getBuyrecordById",
 				data: {
 					id:editid
 				},
@@ -132,17 +132,17 @@ var R_buylist = React.createClass({
 					for(var i in data){
 						num += 1;
 					}
-					window.sessionStorage.setItem('numSupply',num);
-    				o.setState({numSupply:num});
+					window.sessionStorage.setItem('numBuy',num);
+    				o.setState({numBuy:num});
     				for(var i in data){
-						$('#sp_type_'+i).val(data[i].sp_type);
-						$('#sp_paydate_'+i).val(data[i].sp_paydate);
-						$('#sp_paynum_'+i).val(data[i].sp_paynum);
-						$('#sp_payer_'+i).val(data[i].sp_payer);
-						$('#sp_geter_'+i).val(data[i].sp_geter);
+						$('#by_type_'+i).val(data[i].by_type);
+						$('#by_paydate_'+i).val(data[i].by_paydate);
+						$('#by_paynum_'+i).val(data[i].by_paynum);
+						$('#by_payer_'+i).val(data[i].by_payer);
+						$('#by_geter_'+i).val(data[i].by_geter);
 					}
 				}
-			});*/
+			});
 		}
 	},
 	render:function(){
@@ -246,6 +246,29 @@ var R_content = React.createClass({
 			}
 		}
 		
+		var by_type = null;
+		var by_paydate = null;
+		var by_paynum = null;
+		var by_payer = null;
+		var by_geter = null;
+		
+		var nb = window.sessionStorage.getItem('numBuy');
+		for(var i=0;i<nb;i++){
+			if(!by_type){
+				by_type = $("#by_type_"+i).val();
+				by_paydate = $("#by_paydate_"+i).val();
+				by_paynum = $("#by_paynum_"+i).val();
+				by_payer = $("#by_payer_"+i).val();
+				by_geter = $("#by_geter_"+i).val();
+			}else{
+				by_type = by_type + "@" + $("#by_type_"+i).val();
+				by_paydate = by_paydate + "@" + $("#by_paydate_"+i).val();
+				by_paynum = by_paynum + "@" + $("#by_paynum_"+i).val();
+				by_payer = by_payer + "@" + $("#by_payer_"+i).val();
+				by_geter = by_geter + "@" + $("#by_geter_"+i).val();
+			}
+		}
+		
 		var mode = window.sessionStorage.getItem('mode');
 		
 		if (!bookingno) {
@@ -341,7 +364,13 @@ var R_content = React.createClass({
 				sp_paynum:sp_paynum,
 				sp_payer:sp_payer,
 				sp_geter:sp_geter,
+				by_type:by_type,
+				by_paydate:by_paydate,
+				by_paynum:by_paynum,
+				by_payer:by_payer,
+				by_geter:by_geter,
 				numSupply:n,
+				numBuy:nb,
 				buy_type:buy_type,
 				buy_company:buy_company,
 				buy_name:buy_name,

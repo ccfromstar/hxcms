@@ -81,6 +81,26 @@ var R_content = React.createClass({
 				$('#supplybody').html(html);
 			}
 		});
+		$.ajax({
+			type: "post",
+			url: hosts + "/service/getBuyrecordById",
+			data: {
+				id:readdocid
+			},
+			success: function(data) {
+				var html = '';
+				for(var i in data){
+					html += '<tr>';
+					html += '<td>'+data[i].by_type+'</td>';
+					html += '<td>'+data[i].by_paydate+'</td>';
+					html += '<td>'+data[i].by_paynum+'</td>';
+					html += '<td>'+data[i].by_payer+'</td>';
+					html += '<td>'+data[i].by_geter+'</td>';
+					html += '</tr>';
+				}
+				$('#buybody').html(html);
+			}
+		});
 	},
 	render:function(){
 		return(
@@ -306,6 +326,23 @@ var R_content = React.createClass({
 				            </div>
 				            <div className="am-hide-sm-only am-u-md-5"></div>
 				          </div>
+
+				          	<div>
+								<table className="am-table am-table-striped am-table-hover table-main">
+									<thead>
+									   	<tr>
+									        <th>款项类型</th>
+								            <th>付款日期</th>
+								            <th>付款金额</th>
+								            <th>付款人</th>
+								            <th>收款方(华夏/老大)</th>
+									    </tr>
+									</thead>
+									<tbody id="buybody">
+									    
+									</tbody>
+								</table>
+							</div>
 				          
 				        </div>
 				      </div>

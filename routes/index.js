@@ -66,7 +66,14 @@ exports.servicedo = function(req, res) {
 		var sp_payer = req.param("sp_payer");
 		var sp_geter = req.param("sp_geter");
 		
+		var by_type = req.param("by_type");
+		var by_paydate = req.param("by_paydate");
+		var by_paynum = req.param("by_paynum");
+		var by_payer = req.param("by_payer");
+		var by_geter = req.param("by_geter");
+		
 		var numSupply = req.param("numSupply");
+		var numBuy = req.param("numBuy");
 		
 		/*编辑模式*/
 		if(mode == "edit"){
@@ -105,6 +112,8 @@ exports.servicedo = function(req, res) {
 			sql += " where id = "+editid;
 			debug(sql);
 			var sql1 = "delete from supplyrecord where bookingid = "+ editid;
+			var sql2 = "delete from buyrecord where bookingid = "+ editid;
+			debug(sql2);
 			async.waterfall([function(callback) {
 				/*更新booking*/
 			    mysql.query(sql, function(err, result) {
@@ -115,6 +124,14 @@ exports.servicedo = function(req, res) {
 			}, function(result, callback) {
 				/*删除上家信息*/
 			    mysql.query(sql1, function(err, rows) {
+			       if (err) return console.error(err.stack);
+			       if(rows.affectedRows > 0){
+			       		callback(err, rows);
+			       }
+			    });
+			}, function(rows, callback) {
+				/*删除下家信息*/
+			    mysql.query(sql2, function(err, rows) {
 			       if (err) return console.error(err.stack);
 			       if(rows.affectedRows > 0){
 			       		callback(err, rows);
@@ -143,6 +160,32 @@ exports.servicedo = function(req, res) {
 				}, function (err) {
 				   callback(err, rows);
 				});
+			}, function(rows, callback) {
+			    /*保存下家信息记录*/
+			   	var arr1 = by_type.split("@");
+			   	var arr2 = by_paydate.split("@");
+			   	var arr3 = by_paynum.split("@");
+			   	var arr4 = by_payer.split("@");
+			   	var arr5 = by_geter.split("@");
+			   	var arrsql = [];
+			   	var sqli = "";
+			   	for(var i=0;i<arr1.length;i++){
+			   		sqli = "insert into buyrecord (bookingid,by_type,by_paydate,by_paynum,by_payer,by_geter) values ("+editid+",'"+arr1[i]+"','"+arr2[i]+"','"+arr3[i]+"','"+arr4[i]+"','"+arr5[i]+"');";
+			   		arrsql.push(sqli);
+			   		debug(sqli);
+			   	}
+			   	async.eachSeries(arrsql, function (item, callback) {
+				    debug(item);
+				    mysql.query(item, function (err, res) {
+				    	if(res.affectedRows == 1){
+				        	callback(err, res);
+				       	}else{
+				       		callback('error', res);
+				       	}
+				    });
+				}, function (err) {
+				   callback(err, rows);
+				});
 			}], function(err,rows) {
 			    if(err){
 			    	res.send(err);
@@ -153,6 +196,7 @@ exports.servicedo = function(req, res) {
 			});	
 		}else{
 			/*检查订单编号是否重复*/
+			var insertId = null;
 			var sql1 = "select id from booking where bookingno = '"+bookingno+"'";
 			var sql2 = "insert into booking (bookingno,lastModify,userid,saler,operator,startDate,ShipName,numDay,txtLine,txtRoom,numPerson,remark,supplyfile,";
 			sql2 += "supply_company,supply_name,supply_tel,supply_total,supply_deadline,numSupply,";
@@ -180,8 +224,35 @@ exports.servicedo = function(req, res) {
 			   	var arr4 = sp_payer.split("@");
 			   	var arr5 = sp_geter.split("@");
 			   	var arrsql = [];
+			   	insertId = rows.insertId;
 			   	for(var i=0;i<arr1.length;i++){
-			   		arrsql.push("insert into supplyrecord (bookingid,sp_type,sp_paydate,sp_paynum,sp_payer,sp_geter) values ("+rows.insertId+",'"+arr1[i]+"','"+arr2[i]+"','"+arr3[i]+"','"+arr4[i]+"','"+arr5[i]+"');");
+			   		arrsql.push("insert into supplyrecord (bookingid,sp_type,sp_paydate,sp_paynum,sp_payer,sp_geter) values ("+insertId+",'"+arr1[i]+"','"+arr2[i]+"','"+arr3[i]+"','"+arr4[i]+"','"+arr5[i]+"');");
+			   	}
+			   	async.eachSeries(arrsql, function (item, callback) {
+				    debug(item);
+				    mysql.query(item, function (err, res) {
+				    	if(res.affectedRows == 1){
+				        	callback(err, res);
+				       	}else{
+				       		callback('error', res);
+				       	}
+				    });
+				}, function (err) {
+				   callback(err, rows);
+				});
+			}, function(rows, callback) {
+			    /*保存下家信息记录*/
+			   	var arr1 = by_type.split("@");
+			   	var arr2 = by_paydate.split("@");
+			   	var arr3 = by_paynum.split("@");
+			   	var arr4 = by_payer.split("@");
+			   	var arr5 = by_geter.split("@");
+			   	var arrsql = [];
+			   	var sqli = "";
+			   	for(var i=0;i<arr1.length;i++){
+			   		sqli = "insert into buyrecord (bookingid,by_type,by_paydate,by_paynum,by_payer,by_geter) values ("+insertId+",'"+arr1[i]+"','"+arr2[i]+"','"+arr3[i]+"','"+arr4[i]+"','"+arr5[i]+"');";
+			   		arrsql.push(sqli);
+			   		debug(sqli);
 			   	}
 			   	async.eachSeries(arrsql, function (item, callback) {
 				    debug(item);
@@ -230,6 +301,14 @@ exports.servicedo = function(req, res) {
 	}else if(_sql == "getSupplyrecordById"){
 		var id = req.param("id");
 		var sql = "select * from supplyrecord where bookingid = " + id;
+		debug(sql);
+		mysql.query(sql, function(err, result) {
+			if (err) return console.error(err.stack);
+			res.json(result);
+		});
+	}else if(_sql == "getBuyrecordById"){
+		var id = req.param("id");
+		var sql = "select * from buyrecord where bookingid = " + id;
 		debug(sql);
 		mysql.query(sql, function(err, result) {
 			if (err) return console.error(err.stack);
