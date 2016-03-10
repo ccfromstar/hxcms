@@ -223,6 +223,12 @@ var R_content = React.createClass({
 		var buy_contractNo = $('#buy_contractNo').val();
 		var buy_invoiceHead = $('#buy_invoiceHead').val();
 		
+		var fin_change = $('#fin_change').val();
+		var fin_invoice = $('#fin_invoice').val();
+		var fin_month = $('#fin_month').val();
+		var fin_nohx = $('#fin_nohx').val();
+		var fin_remark = $('#fin_remark').val();
+		
 		var sp_type = null;
 		var sp_paydate = null;
 		var sp_paynum = null;
@@ -383,6 +389,11 @@ var R_content = React.createClass({
 				buy_invoice:buy_invoice,
 				profit:profit,
 				profitRate:profitRate,
+				fin_change:fin_change,
+				fin_invoice:fin_invoice,
+				fin_month:fin_month,
+				fin_nohx:fin_nohx,
+				fin_remark:fin_remark,
 				userid: window.sessionStorage.getItem('cid'),
 				editid: window.sessionStorage.getItem("editid")
 			},
@@ -501,6 +512,12 @@ var R_content = React.createClass({
 					
 					$("#profit").val(data[0].profit);
 					$("#profitRate").val(data[0].profitRate);
+					
+					$("#fin_change").val(data[0].fin_change);
+					$("#fin_invoice").val(data[0].fin_invoice);
+					$("#fin_month").val(data[0].fin_month);
+					$("#fin_nohx").val(data[0].fin_nohx);
+					$("#fin_remark").html(data[0].fin_remark);
 					
 					if(data[0].buy_type == "同行"){
 						$("#buy_type_div").find("label").eq(0).addClass("am-active");
@@ -883,7 +900,58 @@ var R_content = React.createClass({
 				        </div>
 				      </div>
 				      <div className="am-tab-panel am-fade" id="tab4">
-				       	4
+				       	<div className="am-form">
+				      	
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              利润核对
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="fin_change" className="am-input-sm" />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              发票情况
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="fin_invoice" className="am-input-sm" />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              结团月份
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="fin_month" className="am-input-sm" />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              收付方非华夏是否结算清楚
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="fin_nohx" className="am-input-sm" />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              其他说明
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-9">
+				              <textarea id="fin_remark" rows="3"></textarea>
+				            </div>
+				          </div>
+				          
+				        </div>
 				      </div>
 				      <div className="am-tab-panel am-fade" id="tab5">
 				       	<div className="am-panel am-panel-default admin-sidebar-panel">

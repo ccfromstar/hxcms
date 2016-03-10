@@ -72,6 +72,12 @@ exports.servicedo = function(req, res) {
 		var by_payer = req.param("by_payer");
 		var by_geter = req.param("by_geter");
 		
+		var fin_change = req.param("fin_change");
+		var fin_invoice = req.param("fin_invoice");
+		var fin_month = req.param("fin_month");
+		var fin_nohx = req.param("fin_nohx");
+		var fin_remark = req.param("fin_remark");
+		
 		var numSupply = req.param("numSupply");
 		var numBuy = req.param("numBuy");
 		
@@ -107,6 +113,12 @@ exports.servicedo = function(req, res) {
 			sql += " supply_total = '"+supply_total+"',";
 			sql += " supply_deadline = '"+supply_deadline+"',";
 			sql += " numSupply = "+numSupply+",";
+			/*第4页*/
+			sql += " fin_change = '"+fin_change+"',";
+			sql += " fin_invoice = '"+fin_invoice+"',";
+			sql += " fin_month = '"+fin_month+"',";
+			sql += " fin_nohx = '"+fin_nohx+"',";
+			sql += " fin_remark = '"+fin_remark+"',";
 			
 			sql += " remark = '"+remark+"'";
 			sql += " where id = "+editid;
@@ -200,10 +212,10 @@ exports.servicedo = function(req, res) {
 			var sql1 = "select id from booking where bookingno = '"+bookingno+"'";
 			var sql2 = "insert into booking (bookingno,lastModify,userid,saler,operator,startDate,ShipName,numDay,txtLine,txtRoom,numPerson,remark,supplyfile,";
 			sql2 += "supply_company,supply_name,supply_tel,supply_total,supply_deadline,numSupply,";
-			sql2 += "buy_type,buy_company,buy_name,buy_tel,buy_total,buy_deadline,buy_contractNo,buy_invoiceHead,buy_contract,buy_invoice,profit,profitRate)";
+			sql2 += "buy_type,buy_company,buy_name,buy_tel,buy_total,buy_deadline,buy_contractNo,buy_invoiceHead,buy_contract,buy_invoice,profit,profitRate,fin_change,fin_invoice,fin_month,fin_nohx,fin_remark)";
 			sql2 += " values('"+bookingno+"',now(),"+userid+",'"+saler+"','"+operator+"','"+startDate+"','"+ShipName+"','"+numDay+"','"+txtLine+"','"+txtRoom+"',"+numPerson+",'"+remark+"','";
 			sql2 += supplyfile+"','"+supply_company+"','"+supply_name+"','"+supply_tel+"','"+supply_total+"','"+supply_deadline+"',"+numSupply;
-			sql2 += ",'"+buy_type+"','"+buy_company+"','"+buy_name+"','"+buy_tel+"','"+buy_total+"','"+buy_deadline+"','"+buy_contractNo+"','"+buy_invoiceHead+"','"+buy_contract+"','"+buy_invoice+"',"+profit+","+profitRate+")";
+			sql2 += ",'"+buy_type+"','"+buy_company+"','"+buy_name+"','"+buy_tel+"','"+buy_total+"','"+buy_deadline+"','"+buy_contractNo+"','"+buy_invoiceHead+"','"+buy_contract+"','"+buy_invoice+"',"+profit+","+profitRate+",'"+fin_change+"','"+fin_invoice+"','"+fin_month+"','"+fin_nohx+"','"+fin_remark+"')";
 			debug(sql2);
 			async.waterfall([function(callback) {
 			    mysql.query(sql1, function(err, result) {
@@ -317,11 +329,16 @@ exports.servicedo = function(req, res) {
 	}else if(_sql == "getBooking"){
 		var page = parseInt(req.param("indexPage"));
 		var cid = parseInt(req.param("cid"));
+		var role = req.param("role");
 		var LIMIT = 6;
 		page = (page && page > 0) ? page : 1;
 		var limit = (limit && limit > 0) ? limit : LIMIT
 		var sql1 = "select * from booking where userid = "+cid+" order by lastModify desc limit " + (page - 1) * limit + "," + limit;
-		var sql2 = "select count(*) as count from booking";
+		var sql2 = "select count(*) as count from booking where userid = "+cid;
+		if(role == "管理员"){
+			var sql1 = "select * from booking order by lastModify desc limit " + (page - 1) * limit + "," + limit;
+			var sql2 = "select count(*) as count from booking";
+		}
 		debug(sql1);
 		async.waterfall([function(callback) {
 		    mysql.query(sql1, function(err, result) {
@@ -363,6 +380,92 @@ exports.servicedo = function(req, res) {
 		res.write('<script>');
 		res.write('window.parent.postMessage("'+fname+'","*");');
 		res.end('</script>');
+	}else if(_sql == "createUser"){
+		var mode = req.param("mode");
+		var username = req.param("username");
+		var password = req.param("password");
+		var name = req.param("name");
+		var role = req.param("role");
+		var editid = req.param("editid");
+		/*编辑模式*/
+		if(mode == "edit"){
+			var sql = "update user set ";
+			sql += " username = '"+username+"',";
+			sql += " password = '"+password+"',";
+			sql += " name = '"+name+"',";
+			sql += " role = '"+role+"'";
+			sql += " where id = "+editid;
+			mysql.query(sql, function(err, result) {
+				if (err) return console.error(err.stack);
+				if(result.affectedRows == 1){
+					res.send("300");
+				}
+			});
+		}else{
+			var sql = "insert into user (username,password,name,role) values ('"+username+"','"+password+"','"+name+"','"+role+"')";
+			mysql.query(sql, function(err, result) {
+				if (err) return console.error(err.stack);
+				if(result.affectedRows == 1){
+					res.send("300");
+				}
+			});
+		}
+	}else if(_sql == "getUser"){
+		var page = parseInt(req.param("indexPage"));
+		var LIMIT = 6;
+		page = (page && page > 0) ? page : 1;
+		var limit = (limit && limit > 0) ? limit : LIMIT
+		var sql1 = "select * from user order by id desc limit " + (page - 1) * limit + "," + limit;
+		var sql2 = "select count(*) as count from user";
+		debug(sql1);
+		async.waterfall([function(callback) {
+		    mysql.query(sql1, function(err, result) {
+		        if (err) return console.error(err.stack);
+		        callback(null, result);
+		    });
+		}, function(result, callback) {
+		    mysql.query(sql2, function(err, rows) {
+		       if (err) return console.error(err.stack);
+		        callback(err, rows,result);
+		    });
+		}], function(err,rows,result) {
+		    if(err){
+		    	console.log(err);
+		    }else{
+		    	
+		    	var total = rows[0].count;
+		    	var totalpage = Math.ceil(total/limit);
+                var isFirstPage = page == 1 ;
+                var isLastPage = ((page -1) * limit + result.length) == total;
+                
+		    	var ret = {
+		    		total:total,
+		    		totalpage:totalpage,
+		    		isFirstPage:isFirstPage,
+		    		isLastPage:isLastPage,
+					record:result
+				};
+				res.json(ret);
+			}
+		});
+	}else if(_sql == "getUserById"){
+		var id = req.param("id");
+		var sql = "select * from user where id = " + id;
+		debug(sql);
+		mysql.query(sql, function(err, result) {
+			if (err) return console.error(err.stack);
+			res.json(result);
+		});
+	}else if(_sql == "delUser"){
+		var id = req.param("id");
+		var sql = "delete from user where id = " + id;
+		debug(sql);
+		mysql.query(sql, function(err, result) {
+			if (err) return console.error(err.stack);
+			if(result.affectedRows == 1){
+				res.send("300");
+			}
+		});
 	}
 }
 

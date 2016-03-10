@@ -8,7 +8,7 @@ var R_content = React.createClass({
 		window.sessionStorage.setItem("mode","new");
 		window.sessionStorage.removeItem("editid");
 		window.sessionStorage.removeItem("startDate");
-		window.location = 'booking.html';
+		window.location = 'userform.html';
 	},
 	readDoc:function(id){
 		window.sessionStorage.setItem("readdocid",id);
@@ -24,15 +24,14 @@ var R_content = React.createClass({
 		var o = this;
 		e.preventDefault();
 		window.sessionStorage.setItem("editid",id);
-		window.sessionStorage.setItem("startDate",startDate);
 		window.sessionStorage.setItem("mode","edit");
-		window.location = 'booking.html';
+		window.location = 'userform.html';
 	},
 	delsql:function(){
 		var o = this;
 		$.ajax({
 			type: "post",
-			url: hosts + "/service/delBooking",
+			url: hosts + "/service/delUser",
 			data: {
 				id:window.sessionStorage.getItem("delid")
 			},
@@ -59,11 +58,9 @@ var R_content = React.createClass({
 		indexPage = indexPage?indexPage:1;
 		$.ajax({
 			type: "post",
-			url: hosts + "/service/getBooking",
+			url: hosts + "/service/getUser",
 			data: {
-				indexPage:indexPage,
-				cid:id,
-				role:role
+				indexPage:indexPage
 			},
 			success: function(data) {
 				o.setState({data:data.record});
@@ -80,16 +77,14 @@ var R_content = React.createClass({
 		var id = window.sessionStorage.getItem('cid');
 		indexPage = indexPage?indexPage:1;
 		var role = window.sessionStorage.getItem("crole");
-		if(role == "业务员"){
+		if(role == "管理员"){
 			$("#btn_add").removeClass("none");
 		}
 		$.ajax({
 			type: "post",
-			url: hosts + "/service/getBooking",
+			url: hosts + "/service/getUser",
 			data: {
-				indexPage:indexPage,
-				cid:id,
-				role:role
+				indexPage:indexPage
 			},
 			success: function(data) {
 				o.setState({data:data.record});
@@ -105,9 +100,9 @@ var R_content = React.createClass({
 		var list = this.state.data.map(function(c){
 		return(
 				<tr>
-	              <td><a href="#" onClick={o.readDoc.bind(o,c.id)}>{c.bookingno}</a></td>
-	              <td className={o.state.isAdmin}>{c.operator}</td>
-	              <td className="am-hide-sm-only">{c.lastModify}</td>
+	              <td>{c.username}</td>
+	              <td>{c.name}</td>
+	              <td>{c.role}</td>
 	              <td>
 	                <div className="am-btn-toolbar">
 	                  <div className="am-btn-group am-btn-group-xs">
@@ -135,14 +130,13 @@ var R_content = React.createClass({
 			<div className="admin-content">
 			
 			    <div className="am-cf am-padding">
-			      <div className="am-fl am-cf"><strong className="am-text-primary am-text-lg">销售订单</strong> / <small>列表</small></div>
+			      <div className="am-fl am-cf"><strong className="am-text-primary am-text-lg">用户管理</strong> / <small>列表</small></div>
 				</div>
 			    <div className="am-g">
 			      <div className="am-u-sm-12 am-u-md-12">
 			        <div className="am-btn-toolbar">
 			          <div className="am-btn-group am-btn-group-xs">
 			            <button id="btn_add" type="button" onClick={this.newDoc} className="am-btn am-btn-default none"><span className="am-icon-plus"></span> 新增</button>
-			          	<button type="button" className="am-btn am-btn-default"><span className="am-icon-file-excel-o"></span> 导出Excel</button>
 			          </div>
 			        </div>
 			      </div>
@@ -154,9 +148,9 @@ var R_content = React.createClass({
 				          <table className="am-table am-table-striped am-table-hover table-main">
 				            <thead>
 				              <tr>
-				                <th>订单号</th>
-				                <th className={this.state.isAdmin}>操作人</th>
-			            		<th className="am-hide-sm-only">修改日期</th>
+				                <th>手机号</th>
+				                <th>姓名</th>
+			            		<th>权限</th>
 			            		<th className="table-set">操作</th>
 				              </tr>
 				          	</thead>

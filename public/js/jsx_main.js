@@ -65,9 +65,6 @@ var R_sidebar = React.createClass({
 		var role = window.sessionStorage.getItem('crole');
 		if(role == "业务员"){
 			$('.admin-sidebar-list').find('li').eq(1).addClass('none');
-			$('.admin-sidebar-list').find('li').eq(2).addClass('none');
-		}else{
-			$('.admin-sidebar-list').find('li').eq(0).addClass('none');
 		}
 	},
 	render:function(){
@@ -76,8 +73,7 @@ var R_sidebar = React.createClass({
 			    <div className="am-offcanvas-bar admin-offcanvas-bar">
 			      <ul className="am-list admin-sidebar-list">
 			       	<li><a href="index.html"><span className="am-icon-table"></span> 销售订单</a></li>
-					<li><a href="admin.html"><span className="am-icon-pencil-square-o"></span> 汇总分析</a></li>
-					<li><a href="user.html"><span className="am-icon-users"></span> 用户管理</a></li>
+					<li><a href="user.html"><span className="am-icon-user"></span> 用户管理</a></li>
 			      </ul>
 			      <div className="fix_bottom"></div>
 			    </div>

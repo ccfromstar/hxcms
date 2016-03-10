@@ -8,7 +8,7 @@ var R_content = React.createClass({
 		return {finish:finish,bookingno: "",saler:"",operator:"",startDate:"",ShipName:"",numDay:"",txtLine:"",txtRoom:"",numPerson:"",remark:"",
 		supply_company:"",supply_name:"",supply_tel:"",supply_total:"",supply_deadline:"",
 		buy_type:"",buy_company:"",buy_name:"",buy_tel:"",buy_total:"",buy_deadline:"",buy_contractNo:"",buy_invoiceHead:"",buy_contract:"",buy_invoice:"",
-		profit:"",profitRate:""
+		profit:"",profitRate:"",fin_change:"",fin_invoice:"",fin_month:"",fin_nohx:""
 		};
 	},
 	cancleDoc:function(){
@@ -45,9 +45,9 @@ var R_content = React.createClass({
 					$('#supplyfile').html(files);
 				}
 				
-				o.setState({buy_type:(data[0].buy_type)?(data[0].buy_type):""});
-				o.setState({buy_contract:(data[0].buy_contract)?(data[0].buy_contract):""});
-				o.setState({buy_invoice:(data[0].buy_invoice)?(data[0].buy_invoice):""});
+				o.setState({buy_type:(data[0].buy_type !="undefined")?(data[0].buy_type):""});
+				o.setState({buy_contract:(data[0].buy_contract !="undefined")?(data[0].buy_contract):""});
+				o.setState({buy_invoice:(data[0].buy_invoice !="undefined")?(data[0].buy_invoice):""});
 				
 				o.setState({buy_company:data[0].buy_company});
 				o.setState({buy_name:data[0].buy_name});
@@ -59,6 +59,12 @@ var R_content = React.createClass({
 				
 				o.setState({profit:data[0].profit});
 				o.setState({profitRate:(Number(data[0].profitRate)*100).toFixed(2)+"%"});
+				
+				o.setState({fin_change:data[0].fin_change});
+				o.setState({fin_invoice:data[0].fin_invoice});
+				o.setState({fin_month:data[0].fin_month});
+				o.setState({fin_nohx:data[0].fin_nohx});
+				$('#fin_remark').html(data[0].fin_remark);
 			}
 		});
 		$.ajax({
@@ -428,7 +434,54 @@ var R_content = React.createClass({
 				        </div>
 				      </div>
 				      <div className="am-tab-panel am-fade" id="tab4">
-				       	4
+				       	<form className="am-form">
+				       	
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-left">
+				              利润核对
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-10">
+				              {this.state.fin_change}
+				            </div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-left">
+				              发票情况
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-10">
+				              {this.state.fin_invoice}
+				            </div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-left">
+				              结团月份
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-10">
+				              {this.state.fin_month}
+				            </div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-left">
+				            	收付方非华夏是否结算清楚
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-10">
+				              {this.state.fin_nohx}
+				            </div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-2 am-text-left">
+				              其他说明
+				            </div>
+				            <div id="fin_remark" className="am-u-sm-8 am-u-md-10">
+				              
+				            </div>
+				          </div>
+				          
+				        </form>
 				      </div>
 				      <div className="am-tab-panel am-fade" id="tab5">
 				       	<div className="am-panel am-panel-default admin-sidebar-panel">
