@@ -58,7 +58,7 @@ var R_content = React.createClass({
 				o.setState({buy_invoiceHead:data[0].buy_invoiceHead});
 				
 				o.setState({profit:data[0].profit});
-				o.setState({profitRate:(Number(data[0].profitRate)*100)+"%"});
+				o.setState({profitRate:(Number(data[0].profitRate)*100).toFixed(2)+"%"});
 			}
 		});
 		$.ajax({
