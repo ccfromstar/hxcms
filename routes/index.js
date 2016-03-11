@@ -83,6 +83,7 @@ exports.servicedo = function(req, res) {
 		
 		var numSupply = req.param("numSupply");
 		var numBuy = req.param("numBuy");
+		var buyfile = req.param("buyfile");
 		
 		/*编辑模式*/
 		if(mode == "edit"){
@@ -110,6 +111,7 @@ exports.servicedo = function(req, res) {
 			sql += " buy_invoiceHead = '"+buy_invoiceHead+"',";
 			sql += " buy_insure = '"+buy_insure+"',";
 			sql += " buy_insureHead = '"+buy_insureHead+"',";
+			sql += " buyfile = '"+buyfile+"',";
 			/*第3页*/
 			sql += " supply_company = '"+supply_company+"',";
 			sql += " supplyfile = '"+supplyfile+"',";
@@ -217,10 +219,10 @@ exports.servicedo = function(req, res) {
 			var sql1 = "select id from booking where bookingno = '"+bookingno+"'";
 			var sql2 = "insert into booking (bookingno,lastModify,userid,saler,operator,startDate,ShipName,numDay,txtLine,txtRoom,numPerson,remark,supplyfile,";
 			sql2 += "supply_company,supply_name,supply_tel,supply_total,supply_deadline,numSupply,";
-			sql2 += "buy_type,buy_company,buy_name,buy_tel,buy_total,buy_deadline,buy_contractNo,buy_invoiceHead,buy_contract,buy_invoice,profit,profitRate,fin_change,fin_invoice,fin_month,fin_nohx,fin_remark,buy_insure,buy_insureHead)";
+			sql2 += "buy_type,buy_company,buy_name,buy_tel,buy_total,buy_deadline,buy_contractNo,buy_invoiceHead,buy_contract,buy_invoice,profit,profitRate,fin_change,fin_invoice,fin_month,fin_nohx,fin_remark,buy_insure,buy_insureHead,buyfile)";
 			sql2 += " values('"+bookingno+"',now(),"+userid+",'"+saler+"','"+operator+"','"+startDate+"','"+ShipName+"','"+numDay+"','"+txtLine+"','"+txtRoom+"',"+numPerson+",'"+remark+"','";
 			sql2 += supplyfile+"','"+supply_company+"','"+supply_name+"','"+supply_tel+"','"+supply_total+"','"+supply_deadline+"',"+numSupply;
-			sql2 += ",'"+buy_type+"','"+buy_company+"','"+buy_name+"','"+buy_tel+"','"+buy_total+"','"+buy_deadline+"','"+buy_contractNo+"','"+buy_invoiceHead+"','"+buy_contract+"','"+buy_invoice+"',"+profit+","+profitRate+",'"+fin_change+"','"+fin_invoice+"','"+fin_month+"','"+fin_nohx+"','"+fin_remark+"','"+buy_insure+"','"+buy_insureHead+"')";
+			sql2 += ",'"+buy_type+"','"+buy_company+"','"+buy_name+"','"+buy_tel+"','"+buy_total+"','"+buy_deadline+"','"+buy_contractNo+"','"+buy_invoiceHead+"','"+buy_contract+"','"+buy_invoice+"',"+profit+","+profitRate+",'"+fin_change+"','"+fin_invoice+"','"+fin_month+"','"+fin_nohx+"','"+fin_remark+"','"+buy_insure+"','"+buy_insureHead+"','"+buyfile+"')";
 			debug(sql2);
 			async.waterfall([function(callback) {
 			    mysql.query(sql1, function(err, result) {
@@ -383,7 +385,14 @@ exports.servicedo = function(req, res) {
 		var fname = req.files.fileUp.path.replace("public\\files\\", "").replace("public/files/", "");
 		res.writeHead(200, {'Content-type' : 'text/html'});
 		res.write('<script>');
-		res.write('window.parent.postMessage("'+fname+'","*");');
+		res.write('window.parent.postMessage("supply@'+fname+'","*");');
+		res.end('</script>');
+	}else if(_sql == "uploadbuydo"){
+		res.setHeader("Access-Control-Allow-Origin", "*");
+		var fname = req.files.fileUpbuy.path.replace("public\\files\\", "").replace("public/files/", "");
+		res.writeHead(200, {'Content-type' : 'text/html'});
+		res.write('<script>');
+		res.write('window.parent.postMessage("buy@'+fname+'","*");');
 		res.end('</script>');
 	}else if(_sql == "createUser"){
 		var mode = req.param("mode");

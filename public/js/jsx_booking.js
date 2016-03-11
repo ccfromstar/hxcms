@@ -205,6 +205,7 @@ var R_content = React.createClass({
 		var remark = $('#remark').val();
 		
 		var supplyfile = $('#supplyfile').val();
+		var buyfile = $('#buyfile').val();
 		var supply_company = $('#supply_company').val();
 		var supply_name = $('#supply_name').val();
 		var supply_tel = $('#supply_tel').val();
@@ -363,6 +364,7 @@ var R_content = React.createClass({
 				numPerson:numPerson,
 				remark:remark,
 				supplyfile:supplyfile,
+				buyfile:buyfile,
 				supply_company:supply_company,
 				supply_name:supply_name,
 				supply_tel:supply_tel,
@@ -469,6 +471,12 @@ var R_content = React.createClass({
 		$('.loadinfo').html('<p>文件上传中...</p>').removeClass("none");
         $('#supplyformFile').submit();
 	},
+	UploadBuy:function(){
+		var path = document.all.fileUpbuy.value;
+		if(!path){return false;}
+		$('.loadinfo').html('<p>文件上传中...</p>').removeClass("none");
+        $('#buyformFile').submit();
+	},
 	componentDidMount:function(){
 		var o = this;
 		$('#operator').val(window.sessionStorage.getItem('cname'));
@@ -505,6 +513,11 @@ var R_content = React.createClass({
 					if(data[0].supplyfile){
 						var files = '<span class="am-icon-file-o"></span> <a target="_blank" href="'+hosts+'/files/'+data[0].supplyfile+'">供应商确认单</a>';
 						$('#supplyfile_div').html(files);
+					}
+					$('#buyfile').val(data[0].buyfile);
+					if(data[0].buyfile){
+						var files = '<span class="am-icon-file-o"></span> <a target="_blank" href="'+hosts+'/files/'+data[0].buyfile+'">客户确认单</a>';
+						$('#buyfile_div').html(files);
 					}
 					
 					$('#buy_company').val(data[0].buy_company);
@@ -561,6 +574,7 @@ var R_content = React.createClass({
 			});
 		}
 		$('#supplyformFile').attr('action',hosts + "/service/uploaddo");
+		$('#buyformFile').attr('action',hosts + "/service/uploadbuydo");
 	},
 	render:function(){
 		return(
@@ -855,6 +869,27 @@ var R_content = React.createClass({
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-4">
 				              <input type="text" id="buy_insureHead" className="am-input-sm" />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              客户确认单上传
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              	<form id="buyformFile" name="formFile1" method="post" target="frameFilebuy"
+    encType="multipart/form-data">
+				              		<div className="am-form-file">
+									  <button type="button" className="am-btn am-btn-default am-btn-sm">
+									    <i className="am-icon-cloud-upload"></i> 选择要上传的文件
+									  </button>
+									  <input type="file" id="fileUpbuy" onChange={this.UploadBuy} name="fileUpbuy" />
+									</div>                                    
+									<div id="buyfile_div"></div>
+				              	</form>
+				              	<iframe id="frameFile" name="frameFilebuy" style={{display: 'none'}}></iframe>
+				              	<input type="hidden" id="buyfile" />
 				            </div>
 				            <div className="am-hide-sm-only am-u-md-5"></div>
 				          </div>

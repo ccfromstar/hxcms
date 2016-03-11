@@ -46,6 +46,10 @@ var R_content = React.createClass({
 					var files = '<span class="am-icon-file-o"></span> <a target="_blank" href="'+hosts+'/files/'+data[0].supplyfile+'">供应商确认单</a>';
 					$('#supplyfile').html(files);
 				}
+				if(data[0].buyfile){
+					var files = '<span class="am-icon-file-o"></span> <a target="_blank" href="'+hosts+'/files/'+data[0].buyfile+'">客户确认单</a>';
+					$('#buyfile').html(files);
+				}
 				
 				o.setState({buy_type:(data[0].buy_type !="undefined")?(data[0].buy_type):""});
 				o.setState({buy_contract:(data[0].buy_contract !="undefined")?(data[0].buy_contract):""});
@@ -352,6 +356,15 @@ var R_content = React.createClass({
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-4">
 				            	{this.state.buy_insureHead}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
+				              客户确认单
+				            </div>
+				            <div id="buyfile" className="am-u-sm-8 am-u-md-4">					
 				            </div>
 				            <div className="am-hide-sm-only am-u-md-5"></div>
 				          </div>
