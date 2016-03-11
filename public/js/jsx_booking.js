@@ -222,6 +222,9 @@ var R_content = React.createClass({
 		var buy_deadline = $('#buy_deadline').val();
 		var buy_contractNo = $('#buy_contractNo').val();
 		var buy_invoiceHead = $('#buy_invoiceHead').val();
+
+		var buy_insure = jqradio('buy_insure');
+		var buy_insureHead = $('#buy_insureHead').val();
 		
 		var fin_change = $('#fin_change').val();
 		var fin_invoice = $('#fin_invoice').val();
@@ -387,6 +390,8 @@ var R_content = React.createClass({
 				buy_invoiceHead:buy_invoiceHead,
 				buy_contract:buy_contract,
 				buy_invoice:buy_invoice,
+				buy_insure:buy_insure,
+				buy_insureHead:buy_insureHead,
 				profit:profit,
 				profitRate:profitRate,
 				fin_change:fin_change,
@@ -518,6 +523,8 @@ var R_content = React.createClass({
 					$("#fin_month").val(data[0].fin_month);
 					$("#fin_nohx").val(data[0].fin_nohx);
 					$("#fin_remark").html(data[0].fin_remark);
+
+					$("#buy_insureHead").val(data[0].buy_insureHead);
 					
 					if(data[0].buy_type == "同行"){
 						$("#buy_type_div").find("label").eq(0).addClass("am-active");
@@ -541,6 +548,14 @@ var R_content = React.createClass({
 					}else if(data[0].buy_invoice == "否"){
 						$("#buy_invoice_div").find("label").eq(1).addClass("am-active");
 						$("#buy_invoice_div").find("input").eq(1).attr("checked","checked");
+					}
+
+					if(data[0].buy_insure == "是"){
+						$("#buy_insure_div").find("label").eq(0).addClass("am-active");
+						$("#buy_insure_div").find("input").eq(0).attr("checked","checked");
+					}else if(data[0].buy_insure == "否"){
+						$("#buy_insure_div").find("label").eq(1).addClass("am-active");
+						$("#buy_insure_div").find("input").eq(1).attr("checked","checked");
 					}
 				}
 			});
@@ -813,6 +828,33 @@ var R_content = React.createClass({
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-4">
 				              <input type="text" id="buy_invoiceHead" className="am-input-sm" />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              购买保险
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              	<div className="am-btn-group" id="buy_insure_div" data-am-button>
+					              <label className="am-btn am-btn-default am-btn-xs">
+					                <input type="radio" name="buy_insure" value="是" >是</input>
+					              </label>
+					              <label className="am-btn am-btn-default am-btn-xs">
+					                <input type="radio" name="buy_insure" value="否" >否</input>
+					              </label>
+					            </div>
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              保险名称/金额
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="buy_insureHead" className="am-input-sm" />
 				            </div>
 				            <div className="am-hide-sm-only am-u-md-5"></div>
 				          </div>

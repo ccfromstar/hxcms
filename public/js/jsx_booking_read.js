@@ -50,6 +50,7 @@ var R_content = React.createClass({
 				o.setState({buy_type:(data[0].buy_type !="undefined")?(data[0].buy_type):""});
 				o.setState({buy_contract:(data[0].buy_contract !="undefined")?(data[0].buy_contract):""});
 				o.setState({buy_invoice:(data[0].buy_invoice !="undefined")?(data[0].buy_invoice):""});
+				o.setState({buy_insure:(data[0].buy_insure !="undefined")?(data[0].buy_insure):""});
 				
 				o.setState({buy_company:data[0].buy_company});
 				o.setState({buy_name:data[0].buy_name});
@@ -58,6 +59,7 @@ var R_content = React.createClass({
 				o.setState({buy_deadline:data[0].buy_deadline});
 				o.setState({buy_contractNo:data[0].buy_contractNo});
 				o.setState({buy_invoiceHead:data[0].buy_invoiceHead});
+				o.setState({buy_insureHead:data[0].buy_insureHead});
 				
 				o.setState({profit:data[0].profit});
 				o.setState({profitRate:(Number(data[0].profitRate)*100).toFixed(2)+"%"});
@@ -332,6 +334,24 @@ var R_content = React.createClass({
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-4">
 				            	{this.state.buy_invoiceHead}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
+				              购买保险
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				            	{this.state.buy_insure}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
+				              保险名称/金额
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				            	{this.state.buy_insureHead}
 				            </div>
 				            <div className="am-hide-sm-only am-u-md-5"></div>
 				          </div>
