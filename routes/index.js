@@ -2,6 +2,8 @@ var settings = require('../settings');
 var mysql = require('../models/db');
 var async = require('async');
 var debug = require('debug')('myapp:index');
+var ejsExcel = require("./ejsExcel");
+var fs = require("fs");
 
 exports.servicedo = function(req, res) {
 	res.setHeader("Access-Control-Allow-Origin", "*");
@@ -340,11 +342,12 @@ exports.servicedo = function(req, res) {
 		var LIMIT = 6;
 		page = (page && page > 0) ? page : 1;
 		var limit = (limit && limit > 0) ? limit : LIMIT
-		var sql1 = "select * from booking where userid = "+cid+" order by lastModify desc limit " + (page - 1) * limit + "," + limit;
-		var sql2 = "select count(*) as count from booking where userid = "+cid;
 		if(role == "管理员"){
 			var sql1 = "select * from booking order by lastModify desc limit " + (page - 1) * limit + "," + limit;
 			var sql2 = "select count(*) as count from booking";
+		}else if(role == "业务员"){
+			var sql1 = "select * from booking where userid = "+cid+" order by lastModify desc limit " + (page - 1) * limit + "," + limit;
+			var sql2 = "select count(*) as count from booking where userid = "+cid;
 		}
 		debug(sql1);
 		async.waterfall([function(callback) {
@@ -480,6 +483,27 @@ exports.servicedo = function(req, res) {
 				res.send("300");
 			}
 		});
+	}else if(_sql == "exportBooking"){
+		//获得Excel模板的buffer对象
+	    var exlBuf = fs.readFileSync("./public/excelop/template/booking.xlsx");
+	    var myDate = new Date();
+	    var y = myDate.getFullYear(); 
+	    var m = (((myDate.getMonth()+1)+"").length==1)?"0"+(myDate.getMonth()+1):(myDate.getMonth()+1);
+	    var d = myDate.getDate(); 
+	    var hh = myDate.getHours();
+	    var mm = myDate.getMinutes();
+	    var ss = myDate.getSeconds();
+	    var excelname = "~"+y+m+d+hh+mm+ss+".xlsx";
+	    //数据源
+	    var sql1 = "select * from booking";
+	    mysql.query(sql1 ,function(error,obj){
+	        if(error){console.log(error);return false;} 
+	        //用数据源(对象)data渲染Excel模板/
+	        ejsExcel.renderExcelCb(exlBuf, obj, function(exlBuf2){
+	            fs.writeFileSync("./public/excelop/temp/"+excelname, exlBuf2);
+	            res.send(excelname);
+	        });
+	    });
 	}
 }
 

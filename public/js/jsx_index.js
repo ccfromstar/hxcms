@@ -74,6 +74,15 @@ var R_content = React.createClass({
 			}
 		});
 	},
+	exportXls:function(){
+		$.ajax({
+			type: "post",
+			url: hosts + "/service/exportBooking",
+			success: function(data) {
+				window.open(hosts + "/excelop/temp/"+data);
+			}
+		});
+	},
 	componentDidMount:function(){
 		var o = this;
 		var indexPage = window.sessionStorage.getItem("indexPage");
@@ -142,7 +151,7 @@ var R_content = React.createClass({
 			        <div className="am-btn-toolbar">
 			          <div className="am-btn-group am-btn-group-xs">
 			            <button id="btn_add" type="button" onClick={this.newDoc} className="am-btn am-btn-default none"><span className="am-icon-plus"></span> 新增</button>
-			          	<button type="button" className="am-btn am-btn-default"><span className="am-icon-file-excel-o"></span> 导出Excel</button>
+			          	<button type="button" onClick={this.exportXls} className="am-btn am-btn-default"><span className="am-icon-file-excel-o"></span> 导出Excel</button>
 			          </div>
 			        </div>
 			      </div>
