@@ -8,7 +8,7 @@ var R_content = React.createClass({
 		return {finish:finish,bookingno: "",saler:"",operator:"",startDate:"",ShipName:"",numDay:"",txtLine:"",txtRoom:"",numPerson:"",remark:"",
 		supply_company:"",supply_name:"",supply_tel:"",supply_total:"",supply_deadline:"",
 		buy_type:"",buy_company:"",buy_name:"",buy_tel:"",buy_total:"",buy_deadline:"",buy_contractNo:"",buy_invoiceHead:"",buy_contract:"",buy_invoice:"",
-		profit:"",profitRate:"",fin_change:"",fin_invoice:"",fin_month:"",fin_nohx:""
+		profit:"",profitRate:"",fin_change:"",fin_invoice:"",fin_month:"",fin_nohx:"",supply_invoice:"",supply_invoiceHead:""
 		};
 	},
 	cancleDoc:function(){
@@ -72,6 +72,10 @@ var R_content = React.createClass({
 				o.setState({fin_invoice:data[0].fin_invoice});
 				o.setState({fin_month:data[0].fin_month});
 				o.setState({fin_nohx:data[0].fin_nohx});
+
+				o.setState({supply_invoice:data[0].supply_invoice});
+				o.setState({supply_invoiceHead:data[0].supply_invoiceHead});
+				
 				$('#fin_remark').html(data[0].fin_remark);
 				$modal.modal('close');
 			}
@@ -437,6 +441,26 @@ var R_content = React.createClass({
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-4">
 				            	{this.state.supply_deadline}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
+				              供应商发票
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				            	{this.state.supply_invoice}
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
+				          </div>
+
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
+				              发票抬头/金额
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				            	{this.state.supply_invoiceHead}
 				            </div>
 				            <div className="am-hide-sm-only am-u-md-5"></div>
 				          </div>

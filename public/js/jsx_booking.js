@@ -211,6 +211,9 @@ var R_content = React.createClass({
 		var supply_tel = $('#supply_tel').val();
 		var supply_total = $('#supply_total').val();
 		var supply_deadline = $('#supply_deadline').val();
+
+		var supply_invoice = jqradio('supply_invoice');
+		var supply_invoiceHead = $('#supply_invoiceHead').val();
 		
 		var buy_type = jqradio('buy_type');
 		var buy_contract = jqradio('buy_contract');
@@ -400,6 +403,8 @@ var R_content = React.createClass({
 				fin_invoice:fin_invoice,
 				fin_month:fin_month,
 				fin_nohx:fin_nohx,
+				supply_invoice:supply_invoice,
+				supply_invoiceHead:supply_invoiceHead,
 				fin_remark:fin_remark,
 				userid: window.sessionStorage.getItem('cid'),
 				editid: window.sessionStorage.getItem("editid")
@@ -538,6 +543,15 @@ var R_content = React.createClass({
 					$("#fin_remark").html(data[0].fin_remark);
 
 					$("#buy_insureHead").val(data[0].buy_insureHead);
+					$("#supply_invoiceHead").val(data[0].supply_invoiceHead);
+
+					if(data[0].supply_invoice == "已开"){
+						$("#supply_invoice_div").find("label").eq(0).addClass("am-active");
+						$("#supply_invoice_div").find("input").eq(0).attr("checked","checked");
+					}else if(data[0].supply_invoice == "未开"){
+						$("#supply_invoice_div").find("label").eq(1).addClass("am-active");
+						$("#supply_invoice_div").find("input").eq(1).attr("checked","checked");
+					}
 					
 					if(data[0].buy_type == "同行"){
 						$("#buy_type_div").find("label").eq(0).addClass("am-active");
@@ -949,6 +963,33 @@ var R_content = React.createClass({
 				              <input type="text" id="supply_deadline" className="am-input-sm" />
 				            </div>
 				            <div className="am-hide-sm-only am-u-md-5">(*必填)</div>
+				          </div>
+
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              供应商发票
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              	<div className="am-btn-group" id="supply_invoice_div" data-am-button>
+					              <label className="am-btn am-btn-default am-btn-xs">
+					                <input type="radio" name="supply_invoice" value="已开" >已开</input>
+					              </label>
+					              <label className="am-btn am-btn-default am-btn-xs">
+					                <input type="radio" name="supply_invoice" value="未开" >未开</input>
+					              </label>
+					            </div>
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5">(*必填)</div>
+				          </div>
+				          
+				          <div className="am-g am-margin-top">
+				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
+				              发票抬头/金额
+				            </div>
+				            <div className="am-u-sm-8 am-u-md-4">
+				              <input type="text" id="supply_invoiceHead" className="am-input-sm" />
+				            </div>
+				            <div className="am-hide-sm-only am-u-md-5"></div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">

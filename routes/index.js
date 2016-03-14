@@ -76,6 +76,9 @@ exports.servicedo = function(req, res) {
 
 		var buy_insure = req.param("buy_insure");
 		var buy_insureHead = req.param("buy_insureHead");
+
+		var supply_invoice = req.param("supply_invoice");
+		var supply_invoiceHead = req.param("supply_invoiceHead");
 		
 		var fin_change = req.param("fin_change");
 		var fin_invoice = req.param("fin_invoice");
@@ -121,6 +124,8 @@ exports.servicedo = function(req, res) {
 			sql += " supply_tel = '"+supply_tel+"',";
 			sql += " supply_total = '"+supply_total+"',";
 			sql += " supply_deadline = '"+supply_deadline+"',";
+			sql += " supply_invoice = '"+supply_invoice+"',";
+			sql += " supply_invoiceHead = '"+supply_invoiceHead+"',";
 			sql += " numSupply = "+numSupply+",";
 			/*第4页*/
 			sql += " fin_change = '"+fin_change+"',";
@@ -221,10 +226,10 @@ exports.servicedo = function(req, res) {
 			var sql1 = "select id from booking where bookingno = '"+bookingno+"'";
 			var sql2 = "insert into booking (bookingno,lastModify,userid,saler,operator,startDate,ShipName,numDay,txtLine,txtRoom,numPerson,remark,supplyfile,";
 			sql2 += "supply_company,supply_name,supply_tel,supply_total,supply_deadline,numSupply,";
-			sql2 += "buy_type,buy_company,buy_name,buy_tel,buy_total,buy_deadline,buy_contractNo,buy_invoiceHead,buy_contract,buy_invoice,profit,profitRate,fin_change,fin_invoice,fin_month,fin_nohx,fin_remark,buy_insure,buy_insureHead,buyfile)";
+			sql2 += "buy_type,buy_company,buy_name,buy_tel,buy_total,buy_deadline,buy_contractNo,buy_invoiceHead,buy_contract,buy_invoice,profit,profitRate,fin_change,fin_invoice,fin_month,fin_nohx,fin_remark,buy_insure,buy_insureHead,buyfile,supply_invoice,supply_invoiceHead)";
 			sql2 += " values('"+bookingno+"',now(),"+userid+",'"+saler+"','"+operator+"','"+startDate+"','"+ShipName+"','"+numDay+"','"+txtLine+"','"+txtRoom+"',"+numPerson+",'"+remark+"','";
 			sql2 += supplyfile+"','"+supply_company+"','"+supply_name+"','"+supply_tel+"','"+supply_total+"','"+supply_deadline+"',"+numSupply;
-			sql2 += ",'"+buy_type+"','"+buy_company+"','"+buy_name+"','"+buy_tel+"','"+buy_total+"','"+buy_deadline+"','"+buy_contractNo+"','"+buy_invoiceHead+"','"+buy_contract+"','"+buy_invoice+"',"+profit+","+profitRate+",'"+fin_change+"','"+fin_invoice+"','"+fin_month+"','"+fin_nohx+"','"+fin_remark+"','"+buy_insure+"','"+buy_insureHead+"','"+buyfile+"')";
+			sql2 += ",'"+buy_type+"','"+buy_company+"','"+buy_name+"','"+buy_tel+"','"+buy_total+"','"+buy_deadline+"','"+buy_contractNo+"','"+buy_invoiceHead+"','"+buy_contract+"','"+buy_invoice+"',"+profit+","+profitRate+",'"+fin_change+"','"+fin_invoice+"','"+fin_month+"','"+fin_nohx+"','"+fin_remark+"','"+buy_insure+"','"+buy_insureHead+"','"+buyfile+"','"+supply_invoice+"','"+supply_invoiceHead+"')";
 			debug(sql2);
 			async.waterfall([function(callback) {
 			    mysql.query(sql1, function(err, result) {
