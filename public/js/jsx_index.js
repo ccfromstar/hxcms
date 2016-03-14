@@ -86,7 +86,7 @@ var R_content = React.createClass({
 			},
 			success: function(data) {
 				window.open(hosts + "/excelop/temp/"+data);
-				$('.loadinfo').html("如果没有自动弹出，点击<a href='"+hosts + "/excelop/temp/"+data+"'>这里</a>下载报表(10秒后自动关闭)").removeClass("none");
+				$('.loadinfo').html("<a href='"+hosts + "/excelop/temp/"+data+"'>如果没有自动弹出下载报表，说明您的浏览器禁止了弹出框，您可以点击这里下载报表(10秒后自动关闭)</a>").removeClass("none");
 				setTimeout(function() {
 					$('.loadinfo').addClass("none");
 				}, 10000);
