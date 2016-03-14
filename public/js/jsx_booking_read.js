@@ -128,8 +128,8 @@ var R_content = React.createClass({
 			    <div className="am-tabs am-margin" data-am-tabs>
 				    <ul className="am-tabs-nav am-nav am-nav-tabs">
 				      <li className="am-active"><a href="#tab1">销售填写</a></li>
-				      <li><a href="#tab2">下家信息</a></li>
-				      <li><a href="#tab3">上家信息</a></li>
+				      <li><a href="#tab2">客户信息</a></li>
+				      <li><a href="#tab3">供应商信息</a></li>
 				      <li><a href="#tab4" className={this.state.finish} >结团信息</a></li>
 				      <li><a href="#tab5">说明</a></li>
 				    </ul>
@@ -289,7 +289,7 @@ var R_content = React.createClass({
 				          </div>
 				          <div className="am-g am-margin-top">
 				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
-				              采购金额
+				              采购金额(应收金额)
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-4">
 				            	{this.state.buy_total}
@@ -377,7 +377,7 @@ var R_content = React.createClass({
 								            <th>付款日期</th>
 								            <th>付款金额</th>
 								            <th>付款人</th>
-								            <th>收款方(华夏/老大)</th>
+								            <th>收款方(华夏/3055)</th>
 									    </tr>
 									</thead>
 									<tbody id="buybody">
@@ -457,7 +457,7 @@ var R_content = React.createClass({
 									        <th>款项类型</th>
 								            <th>付款日期</th>
 								            <th>付款金额</th>
-								            <th>付款人(华夏/老大)</th>
+								            <th>付款人(华夏/3055)</th>
 								            <th>收款方</th>
 									    </tr>
 									</thead>

@@ -77,7 +77,7 @@ var R_supplylist = React.createClass({
 					        <th>款项类型</th>
 				            <th>付款日期</th>
 				            <th>付款金额</th>
-				            <th>付款人(华夏/老大)</th>
+				            <th>付款人(华夏/3055)</th>
 				            <th>收款方</th>
 					    </tr>
 					</thead>
@@ -167,7 +167,7 @@ var R_buylist = React.createClass({
 				            <th>付款日期</th>
 				            <th>付款金额</th>
 				            <th>付款人</th>
-				            <th>收款方(华夏/老大)</th>
+				            <th>收款方(华夏/3055)</th>
 					    </tr>
 					</thead>
 					<tbody>
@@ -587,8 +587,8 @@ var R_content = React.createClass({
 			    <div className="am-tabs am-margin" data-am-tabs>
 				    <ul className="am-tabs-nav am-nav am-nav-tabs">
 				      <li className="am-active"><a href="#tab1">销售填写</a></li>
-				      <li><a href="#tab2">下家信息</a></li>
-				      <li><a href="#tab3">上家信息</a></li>
+				      <li><a href="#tab2">客户信息</a></li>
+				      <li><a href="#tab3">供应商信息</a></li>
 				      <li><a href="#tab4" className={this.state.finish}>结团信息</a></li>
 				      <li><a href="#tab5">说明</a></li>
 				    </ul>
@@ -739,7 +739,7 @@ var R_content = React.createClass({
 					              </label>
 					            </div>
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-5"></div>
+				            <div className="am-hide-sm-only am-u-md-5">(*必填)</div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
@@ -749,7 +749,7 @@ var R_content = React.createClass({
 				            <div className="am-u-sm-8 am-u-md-4">
 				              <input type="text" id="buy_company" className="am-input-sm" />
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-5"></div>
+				            <div className="am-hide-sm-only am-u-md-5">(*同行必填)</div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
@@ -759,7 +759,7 @@ var R_content = React.createClass({
 				            <div className="am-u-sm-8 am-u-md-4">
 				              <input type="text" id="buy_name" className="am-input-sm" />
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-5"></div>
+				            <div className="am-hide-sm-only am-u-md-5">(*必填)</div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
@@ -769,17 +769,17 @@ var R_content = React.createClass({
 				            <div className="am-u-sm-8 am-u-md-4">
 				              <input type="text" id="buy_tel" className="am-input-sm" />
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-5"></div>
+				            <div className="am-hide-sm-only am-u-md-5">(*必填)</div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
 				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
-				              采购金额
+				              采购金额(应收金额)
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-4">
 				              <input type="text" id="buy_total" className="am-input-sm" value={this.state.buy_total} onChange={this.buy_total} />
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-5"></div>
+				            <div className="am-hide-sm-only am-u-md-5">(*必填)</div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
@@ -789,7 +789,7 @@ var R_content = React.createClass({
 				            <div className="am-u-sm-8 am-u-md-4">
 				              <input type="text" id="buy_deadline" className="am-input-sm" />
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-5"></div>
+				            <div className="am-hide-sm-only am-u-md-5">(*必填)</div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
@@ -806,7 +806,7 @@ var R_content = React.createClass({
 					              </label>
 					            </div>
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-5"></div>
+				            <div className="am-hide-sm-only am-u-md-5">(*必填)</div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
@@ -860,7 +860,7 @@ var R_content = React.createClass({
 					              </label>
 					            </div>
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-5"></div>
+				            <div className="am-hide-sm-only am-u-md-5">(*必填)</div>
 				          </div>
 
 				          <div className="am-g am-margin-top">
@@ -908,7 +908,7 @@ var R_content = React.createClass({
 				            <div className="am-u-sm-8 am-u-md-4">
 				              <input type="text" id="supply_company" className="am-input-sm" />
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-5"></div>
+				            <div className="am-hide-sm-only am-u-md-5">(*必填)</div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
@@ -918,7 +918,7 @@ var R_content = React.createClass({
 				            <div className="am-u-sm-8 am-u-md-4">
 				              <input type="text" id="supply_name" className="am-input-sm" />
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-5"></div>
+				            <div className="am-hide-sm-only am-u-md-5">(*必填)</div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
@@ -928,7 +928,7 @@ var R_content = React.createClass({
 				            <div className="am-u-sm-8 am-u-md-4">
 				              <input type="text" id="supply_tel" className="am-input-sm" />
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-5"></div>
+				            <div className="am-hide-sm-only am-u-md-5">(*必填)</div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
@@ -938,7 +938,7 @@ var R_content = React.createClass({
 				            <div className="am-u-sm-8 am-u-md-4">
 				              <input type="text" id="supply_total" className="am-input-sm" value={this.state.supply_total} onChange={this.supply_total} />
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-5"></div>
+				            <div className="am-hide-sm-only am-u-md-5">(*必填)</div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
@@ -948,7 +948,7 @@ var R_content = React.createClass({
 				            <div className="am-u-sm-8 am-u-md-4">
 				              <input type="text" id="supply_deadline" className="am-input-sm" />
 				            </div>
-				            <div className="am-hide-sm-only am-u-md-5"></div>
+				            <div className="am-hide-sm-only am-u-md-5">(*必填)</div>
 				          </div>
 				          
 				          <div className="am-g am-margin-top">
