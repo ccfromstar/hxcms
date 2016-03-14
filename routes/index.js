@@ -484,6 +484,8 @@ exports.servicedo = function(req, res) {
 			}
 		});
 	}else if(_sql == "exportBooking"){
+		var cid = parseInt(req.param("cid"));
+		var role = req.param("role");
 		//获得Excel模板的buffer对象
 	    var exlBuf = fs.readFileSync("./public/excelop/template/booking.xlsx");
 	    var myDate = new Date();
@@ -495,7 +497,11 @@ exports.servicedo = function(req, res) {
 	    var ss = myDate.getSeconds();
 	    var excelname = "~"+y+m+d+hh+mm+ss+".xlsx";
 	    //数据源
-	    var sql1 = "select * from booking";
+	    if(role == "管理员"){
+			var sql1 = "select * from booking";
+		}else if(role == "业务员"){
+			var sql1 = "select * from booking where userid = " + cid;
+		}
 	    mysql.query(sql1 ,function(error,obj){
 	        if(error){console.log(error);return false;} 
 	        //用数据源(对象)data渲染Excel模板/

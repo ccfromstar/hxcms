@@ -75,9 +75,15 @@ var R_content = React.createClass({
 		});
 	},
 	exportXls:function(){
+		var id = window.sessionStorage.getItem('cid');
+		var role = window.sessionStorage.getItem("crole");
 		$.ajax({
 			type: "post",
 			url: hosts + "/service/exportBooking",
+			data: {
+				cid:id,
+				role:role
+			},
 			success: function(data) {
 				window.open(hosts + "/excelop/temp/"+data);
 			}
