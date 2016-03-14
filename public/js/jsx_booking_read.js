@@ -253,7 +253,7 @@ var R_content = React.createClass({
 				       	
 				          <div className="am-g am-margin-top">
 				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
-				              采购人类型
+				              客户类型
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-4">
 				            	{this.state.buy_type}
@@ -262,7 +262,7 @@ var R_content = React.createClass({
 				          </div>
 				          <div className="am-g am-margin-top">
 				            <div className="am-u-sm-4 am-u-md-3 am-text-left">
-				              采购人公司
+				              客户公司
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-4">
 				            	{this.state.buy_company}

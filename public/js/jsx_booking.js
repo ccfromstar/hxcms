@@ -727,7 +727,7 @@ var R_content = React.createClass({
 				      	
 				          <div className="am-g am-margin-top">
 				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
-				              采购人类型
+				              客户类型
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-4">
 				              	<div className="am-btn-group" id="buy_type_div" data-am-button>
@@ -744,7 +744,7 @@ var R_content = React.createClass({
 				          
 				          <div className="am-g am-margin-top">
 				            <div className="am-u-sm-4 am-u-md-3 am-text-right">
-				              采购人公司
+				              客户公司
 				            </div>
 				            <div className="am-u-sm-8 am-u-md-4">
 				              <input type="text" id="buy_company" className="am-input-sm" />

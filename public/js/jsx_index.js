@@ -100,7 +100,7 @@ var R_content = React.createClass({
 		indexPage = indexPage?indexPage:1;
 		var role = window.sessionStorage.getItem("crole");
 		if(role == "业务员"){
-			$("#btn_add").removeClass("none");
+			//$("#btn_add").removeClass("none");
 		}
 		$.ajax({
 			type: "post",
@@ -160,7 +160,7 @@ var R_content = React.createClass({
 			      <div className="am-u-sm-12 am-u-md-12">
 			        <div className="am-btn-toolbar">
 			          <div className="am-btn-group am-btn-group-xs">
-			            <button id="btn_add" type="button" onClick={this.newDoc} className="am-btn am-btn-default none"><span className="am-icon-plus"></span> 新增</button>
+			            <button id="btn_add" type="button" onClick={this.newDoc} className="am-btn am-btn-default "><span className="am-icon-plus"></span> 新增</button>
 			          	<button type="button" onClick={this.exportXls} className="am-btn am-btn-default"><span className="am-icon-file-excel-o"></span> 导出Excel</button>
 			          </div>
 			        </div>
