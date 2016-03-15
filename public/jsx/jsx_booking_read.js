@@ -565,21 +565,3 @@ var R_content = React.createClass({
 		);
 	}
 });
-
-/*
- * 数据加载组件
- * */
-var R_loading = React.createClass({
-	render:function(){
-		return(
-			<div className="am-modal am-modal-loading am-modal-no-btn" tabindex="-1" id="my-modal-loading">
-				<div className="am-modal-dialog">
-					<div className="am-modal-hd">数据加载中...</div>
-					<div className="am-modal-bd">
-						<span className="am-icon-spinner am-icon-spin"></span>
-					</div>
-				</div>
-			</div>
-		);
-	}
-});

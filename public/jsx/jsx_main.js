@@ -6,7 +6,6 @@ var fun = [
 var default_info = <div id="result"><p class="p_top">搜索关键字提示</p><p>邮轮公司（如：歌诗达）</p><p>船名（如：维多利亚）</p><p>途径港口（如：福冈）</p></div>;
 var load = <ul id="ajax_list" className="am-list"><li>数据查询中... <i className="am-icon-spinner am-icon-pulse"></i></li></ul>;
 
-
 /*
  * 底部菜单栏组件
  * */
@@ -201,6 +200,23 @@ var R_Search = React.createClass({
 				<R_Input onsearchKey={this.handlesearch} />
 				<R_Result date={this.state.res} />
 			</form>
+		);
+	}
+});
+/*
+ * 数据加载组件
+ * */
+var R_loading = React.createClass({
+	render:function(){
+		return(
+			<div className="am-modal am-modal-loading am-modal-no-btn" tabindex="-1" id="my-modal-loading">
+				<div className="am-modal-dialog">
+					<div className="am-modal-hd">数据加载中...</div>
+					<div className="am-modal-bd">
+						<span className="am-icon-spinner am-icon-spin"></span>
+					</div>
+				</div>
+			</div>
 		);
 	}
 });

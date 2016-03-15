@@ -95,6 +95,8 @@ var R_content = React.createClass({
 	},
 	componentDidMount:function(){
 		var o = this;
+		var $modal = $('#my-modal-loading');
+		$modal.modal();
 		var indexPage = window.sessionStorage.getItem("indexPage");
 		var id = window.sessionStorage.getItem('cid');
 		indexPage = indexPage?indexPage:1;
@@ -116,6 +118,7 @@ var R_content = React.createClass({
 				o.setState({totalpage:data.totalpage});
 				o.setState({isFirst:(data.isFirstPage?"am-disabled":"")});
 				o.setState({isLast:(data.isLastPage?"am-disabled":"")});
+				$modal.modal('close');
 			}
 		});
 	},
