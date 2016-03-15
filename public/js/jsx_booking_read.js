@@ -73,9 +73,9 @@ var R_content = React.createClass({
 				o.setState({fin_month:data[0].fin_month});
 				o.setState({fin_nohx:data[0].fin_nohx});
 
-				o.setState({supply_invoice:data[0].supply_invoice});
+				o.setState({supply_invoice:(data[0].supply_invoice !="undefined")?(data[0].supply_invoice):""});
 				o.setState({supply_invoiceHead:data[0].supply_invoiceHead});
-				
+
 				$('#fin_remark').html(data[0].fin_remark);
 				$modal.modal('close');
 			}
