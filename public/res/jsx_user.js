@@ -107,7 +107,7 @@ var R_content = React.createClass({displayName: "R_content",
 	              React.createElement("td", null, c.name), 
 	              React.createElement("td", null, c.role), 
 	              React.createElement("td", null, 
-	                React.createElement("div", {className: "am-btn-toolbar"}, 
+	                React.createElement("div", {className: "am-hide-sm-only am-btn-toolbar"}, 
 	                  React.createElement("div", {className: "am-btn-group am-btn-group-xs"}, 
 	                    React.createElement("button", {onClick: o.editDoc.bind(o,c.id,c.startDate), className: "am-btn am-btn-default am-btn-xs am-text-secondary"}, React.createElement("span", {className: "am-icon-pencil-square-o"}), " 编辑"), 
 	                    React.createElement("button", {onClick: o.delDoc.bind(o,c.id), className: "am-btn am-btn-default am-btn-xs am-text-danger"}, React.createElement("span", {className: "am-icon-trash-o"}), " 删除")
@@ -154,7 +154,7 @@ var R_content = React.createClass({displayName: "R_content",
 				                React.createElement("th", null, "手机号"), 
 				                React.createElement("th", null, "姓名"), 
 			            		React.createElement("th", null, "权限"), 
-			            		React.createElement("th", {className: "table-set"}, "操作")
+			            		React.createElement("th", {className: "am-hide-sm-only table-set"}, "操作")
 				              )
 				          	), 
 				          	React.createElement("tbody", null, 

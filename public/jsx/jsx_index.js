@@ -52,6 +52,7 @@ var R_content = React.createClass({
 		if(e){
 			e.preventDefault();
 		}
+		var key = $("#key").val();
 		window.sessionStorage.setItem("indexPage",page);
 		var indexPage = window.sessionStorage.getItem("indexPage");
 		var id = window.sessionStorage.getItem('cid');
@@ -59,8 +60,9 @@ var R_content = React.createClass({
 		indexPage = indexPage?indexPage:1;
 		$.ajax({
 			type: "post",
-			url: hosts + "/service/getBooking",
+			url: hosts + "/service/getBookingByKey",
 			data: {
+				key:key,
 				indexPage:indexPage,
 				cid:id,
 				role:role
@@ -90,6 +92,32 @@ var R_content = React.createClass({
 				setTimeout(function() {
 					$('.loadinfo').addClass("none");
 				}, 10000);
+			}
+		});
+	},
+	search:function(){
+		var o = this;
+		var key = $("#key").val();
+		var indexPage = window.sessionStorage.getItem("indexPage");
+		var id = window.sessionStorage.getItem('cid');
+		indexPage = indexPage?indexPage:1;
+		var role = window.sessionStorage.getItem("crole");
+		$.ajax({
+			type: "post",
+			url: hosts + "/service/getBookingByKey",
+			data: {
+				key:key,
+				indexPage:indexPage,
+				cid:id,
+				role:role
+			},
+			success: function(data) {
+				o.setState({data:data.record});
+				o.setState({total:data.total});
+				o.setState({totalpage:data.totalpage});
+				o.setState({isFirst:(data.isFirstPage?"am-disabled":"")});
+				o.setState({isLast:(data.isLastPage?"am-disabled":"")});
+				$modal.modal('close');
 			}
 		});
 	},
@@ -129,9 +157,9 @@ var R_content = React.createClass({
 				<tr>
 	              <td><a href="#" onClick={o.readDoc.bind(o,c.id)}>{c.bookingno}</a></td>
 	              <td className={o.state.isAdmin}>{c.operator}</td>
-	              <td className="am-hide-sm-only">{c.lastModify}</td>
+	              <td>{c.createAt}</td>
 	              <td>
-	                <div className="am-btn-toolbar">
+	                <div className="am-hide-sm-only am-btn-toolbar">
 	                  <div className="am-btn-group am-btn-group-xs">
 	                    <button onClick={o.editDoc.bind(o,c.id,c.startDate)} className="am-btn am-btn-default am-btn-xs am-text-secondary"><span className="am-icon-pencil-square-o"></span> 编辑</button>
 	                    <button onClick={o.delDoc.bind(o,c.id)} className="am-btn am-btn-default am-btn-xs am-text-danger"><span className="am-icon-trash-o"></span> 删除</button>
@@ -160,12 +188,20 @@ var R_content = React.createClass({
 			      <div className="am-fl am-cf"><strong className="am-text-primary am-text-lg">销售订单</strong> / <small>列表</small></div>
 				</div>
 			    <div className="am-g">
-			      <div className="am-u-sm-12 am-u-md-12">
+			      <div className="am-u-sm-12 am-u-md-9">
 			        <div className="am-btn-toolbar">
 			          <div className="am-btn-group am-btn-group-xs">
 			            <button id="btn_add" type="button" onClick={this.newDoc} className="am-btn am-btn-default "><span className="am-icon-plus"></span> 新增</button>
 			          	<button type="button" onClick={this.exportXls} className="am-btn am-btn-default"><span className="am-icon-file-excel-o"></span> 导出Excel</button>
 			          </div>
+			        </div>
+			      </div>
+			      <div className="am-u-sm-12 am-u-md-3">
+			        <div className="am-input-group am-input-group-sm">
+			          <input type="text" id="key" className="am-form-field" placeholder="请输入订单号" />
+			          <span className="am-input-group-btn">
+			            <button onClick={this.search} className="am-btn am-btn-default" type="button">搜索</button>
+			          </span>
 			        </div>
 			      </div>
 			    </div>
@@ -178,8 +214,8 @@ var R_content = React.createClass({
 				              <tr>
 				                <th>订单号</th>
 				                <th className={this.state.isAdmin}>操作人</th>
-			            		<th className="am-hide-sm-only">修改日期</th>
-			            		<th className="table-set">操作</th>
+			            		<th>创建日期</th>
+			            		<th className="am-hide-sm-only table-set">操作</th>
 				              </tr>
 				          	</thead>
 				          	<tbody>

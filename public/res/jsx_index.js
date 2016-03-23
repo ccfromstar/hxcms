@@ -52,6 +52,7 @@ var R_content = React.createClass({displayName: "R_content",
 		if(e){
 			e.preventDefault();
 		}
+		var key = $("#key").val();
 		window.sessionStorage.setItem("indexPage",page);
 		var indexPage = window.sessionStorage.getItem("indexPage");
 		var id = window.sessionStorage.getItem('cid');
@@ -59,8 +60,9 @@ var R_content = React.createClass({displayName: "R_content",
 		indexPage = indexPage?indexPage:1;
 		$.ajax({
 			type: "post",
-			url: hosts + "/service/getBooking",
+			url: hosts + "/service/getBookingByKey",
 			data: {
+				key:key,
 				indexPage:indexPage,
 				cid:id,
 				role:role
@@ -90,6 +92,32 @@ var R_content = React.createClass({displayName: "R_content",
 				setTimeout(function() {
 					$('.loadinfo').addClass("none");
 				}, 10000);
+			}
+		});
+	},
+	search:function(){
+		var o = this;
+		var key = $("#key").val();
+		var indexPage = window.sessionStorage.getItem("indexPage");
+		var id = window.sessionStorage.getItem('cid');
+		indexPage = indexPage?indexPage:1;
+		var role = window.sessionStorage.getItem("crole");
+		$.ajax({
+			type: "post",
+			url: hosts + "/service/getBookingByKey",
+			data: {
+				key:key,
+				indexPage:indexPage,
+				cid:id,
+				role:role
+			},
+			success: function(data) {
+				o.setState({data:data.record});
+				o.setState({total:data.total});
+				o.setState({totalpage:data.totalpage});
+				o.setState({isFirst:(data.isFirstPage?"am-disabled":"")});
+				o.setState({isLast:(data.isLastPage?"am-disabled":"")});
+				$modal.modal('close');
 			}
 		});
 	},
@@ -129,9 +157,9 @@ var R_content = React.createClass({displayName: "R_content",
 				React.createElement("tr", null, 
 	              React.createElement("td", null, React.createElement("a", {href: "#", onClick: o.readDoc.bind(o,c.id)}, c.bookingno)), 
 	              React.createElement("td", {className: o.state.isAdmin}, c.operator), 
-	              React.createElement("td", {className: "am-hide-sm-only"}, c.lastModify), 
+	              React.createElement("td", null, c.createAt), 
 	              React.createElement("td", null, 
-	                React.createElement("div", {className: "am-btn-toolbar"}, 
+	                React.createElement("div", {className: "am-hide-sm-only am-btn-toolbar"}, 
 	                  React.createElement("div", {className: "am-btn-group am-btn-group-xs"}, 
 	                    React.createElement("button", {onClick: o.editDoc.bind(o,c.id,c.startDate), className: "am-btn am-btn-default am-btn-xs am-text-secondary"}, React.createElement("span", {className: "am-icon-pencil-square-o"}), " 编辑"), 
 	                    React.createElement("button", {onClick: o.delDoc.bind(o,c.id), className: "am-btn am-btn-default am-btn-xs am-text-danger"}, React.createElement("span", {className: "am-icon-trash-o"}), " 删除")
@@ -160,11 +188,19 @@ var R_content = React.createClass({displayName: "R_content",
 			      React.createElement("div", {className: "am-fl am-cf"}, React.createElement("strong", {className: "am-text-primary am-text-lg"}, "销售订单"), " / ", React.createElement("small", null, "列表"))
 				), 
 			    React.createElement("div", {className: "am-g"}, 
-			      React.createElement("div", {className: "am-u-sm-12 am-u-md-12"}, 
+			      React.createElement("div", {className: "am-u-sm-12 am-u-md-9"}, 
 			        React.createElement("div", {className: "am-btn-toolbar"}, 
 			          React.createElement("div", {className: "am-btn-group am-btn-group-xs"}, 
 			            React.createElement("button", {id: "btn_add", type: "button", onClick: this.newDoc, className: "am-btn am-btn-default "}, React.createElement("span", {className: "am-icon-plus"}), " 新增"), 
 			          	React.createElement("button", {type: "button", onClick: this.exportXls, className: "am-btn am-btn-default"}, React.createElement("span", {className: "am-icon-file-excel-o"}), " 导出Excel")
+			          )
+			        )
+			      ), 
+			      React.createElement("div", {className: "am-u-sm-12 am-u-md-3"}, 
+			        React.createElement("div", {className: "am-input-group am-input-group-sm"}, 
+			          React.createElement("input", {type: "text", id: "key", className: "am-form-field", placeholder: "请输入订单号"}), 
+			          React.createElement("span", {className: "am-input-group-btn"}, 
+			            React.createElement("button", {onClick: this.search, className: "am-btn am-btn-default", type: "button"}, "搜索")
 			          )
 			        )
 			      )
@@ -178,8 +214,8 @@ var R_content = React.createClass({displayName: "R_content",
 				              React.createElement("tr", null, 
 				                React.createElement("th", null, "订单号"), 
 				                React.createElement("th", {className: this.state.isAdmin}, "操作人"), 
-			            		React.createElement("th", {className: "am-hide-sm-only"}, "修改日期"), 
-			            		React.createElement("th", {className: "table-set"}, "操作")
+			            		React.createElement("th", null, "创建日期"), 
+			            		React.createElement("th", {className: "am-hide-sm-only table-set"}, "操作")
 				              )
 				          	), 
 				          	React.createElement("tbody", null, 

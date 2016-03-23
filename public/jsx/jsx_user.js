@@ -107,7 +107,7 @@ var R_content = React.createClass({
 	              <td>{c.name}</td>
 	              <td>{c.role}</td>
 	              <td>
-	                <div className="am-btn-toolbar">
+	                <div className="am-hide-sm-only am-btn-toolbar">
 	                  <div className="am-btn-group am-btn-group-xs">
 	                    <button onClick={o.editDoc.bind(o,c.id,c.startDate)} className="am-btn am-btn-default am-btn-xs am-text-secondary"><span className="am-icon-pencil-square-o"></span> 编辑</button>
 	                    <button onClick={o.delDoc.bind(o,c.id)} className="am-btn am-btn-default am-btn-xs am-text-danger"><span className="am-icon-trash-o"></span> 删除</button>
@@ -154,7 +154,7 @@ var R_content = React.createClass({
 				                <th>手机号</th>
 				                <th>姓名</th>
 			            		<th>权限</th>
-			            		<th className="table-set">操作</th>
+			            		<th className="am-hide-sm-only table-set">操作</th>
 				              </tr>
 				          	</thead>
 				          	<tbody>

@@ -348,10 +348,10 @@ exports.servicedo = function(req, res) {
 		page = (page && page > 0) ? page : 1;
 		var limit = (limit && limit > 0) ? limit : LIMIT
 		if(role == "管理员"){
-			var sql1 = "select * from booking order by lastModify desc limit " + (page - 1) * limit + "," + limit;
+			var sql1 = "select * from booking order by createAt desc limit " + (page - 1) * limit + "," + limit;
 			var sql2 = "select count(*) as count from booking";
 		}else if(role == "业务员"){
-			var sql1 = "select * from booking where userid = "+cid+" order by lastModify desc limit " + (page - 1) * limit + "," + limit;
+			var sql1 = "select * from booking where userid = "+cid+" order by createAt desc limit " + (page - 1) * limit + "," + limit;
 			var sql2 = "select count(*) as count from booking where userid = "+cid;
 		}
 		debug(sql1);
@@ -370,7 +370,56 @@ exports.servicedo = function(req, res) {
 		    	console.log(err);
 		    }else{
 		    	for(var i in result){
-		    		result[i].lastModify = (result[i].lastModify).Format("yyyy-MM-dd hh:mm:ss");
+		    		result[i].createAt = (result[i].createAt).Format("yyyy-MM-dd hh:mm:ss");
+		    	}
+		    	
+		    	var total = rows[0].count;
+		    	var totalpage = Math.ceil(total/limit);
+                var isFirstPage = page == 1 ;
+                var isLastPage = ((page -1) * limit + result.length) == total;
+                
+		    	var ret = {
+		    		total:total,
+		    		totalpage:totalpage,
+		    		isFirstPage:isFirstPage,
+		    		isLastPage:isLastPage,
+					record:result
+				};
+				res.json(ret);
+			}
+		});
+	}else if(_sql == "getBookingByKey"){
+		var key = req.param("key");
+		var page = parseInt(req.param("indexPage"));
+		var cid = parseInt(req.param("cid"));
+		var role = req.param("role");
+		var LIMIT = 6;
+		page = (page && page > 0) ? page : 1;
+		var limit = (limit && limit > 0) ? limit : LIMIT
+		if(role == "管理员"){
+			var sql1 = "select * from booking where bookingno like '%"+key+"%' order by createAt desc limit " + (page - 1) * limit + "," + limit;
+			var sql2 = "select count(*) as count from booking where bookingno like '%"+key+"%'";
+		}else if(role == "业务员"){
+			var sql1 = "select * from booking where bookingno like '%"+key+"%' and userid = "+cid+" order by createAt desc limit " + (page - 1) * limit + "," + limit;
+			var sql2 = "select count(*) as count from booking where bookingno like '%"+key+"%' and userid = "+cid;
+		}
+		debug(sql1);
+		async.waterfall([function(callback) {
+		    mysql.query(sql1, function(err, result) {
+		        if (err) return console.error(err.stack);
+		        callback(null, result);
+		    });
+		}, function(result, callback) {
+		    mysql.query(sql2, function(err, rows) {
+		       if (err) return console.error(err.stack);
+		        callback(err, rows,result);
+		    });
+		}], function(err,rows,result) {
+		    if(err){
+		    	console.log(err);
+		    }else{
+		    	for(var i in result){
+		    		result[i].createAt = (result[i].createAt).Format("yyyy-MM-dd hh:mm:ss");
 		    	}
 		    	
 		    	var total = rows[0].count;
